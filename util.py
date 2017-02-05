@@ -3,7 +3,6 @@ import requests
 import os
 import bs4
 
-######### DO NOT CHANGE THIS CODE  #########
 
 def get_request(url):
     '''
@@ -82,13 +81,6 @@ def convert_if_relative_url(current_url, new_url):
     Outputs:
         new absolute URL or None, if cannot determine that
         new_url is a relative URL.
-
-    Examples:
-        convert_if_relative_url("http://cs.uchicago.edu", "pa/pa1.html") yields 
-            'http://cs.uchicago.edu/pa/pa.html'
-
-        convert_if_relative_url("http://cs.uchicago.edu", "foo.edu/pa.html") yields
-            'http://foo.edu/pa.html'
     '''
     if new_url == "" or not is_absolute_url(current_url):
         return None
@@ -126,13 +118,6 @@ def is_url_ok_to_follow(url, limiting_domain):
         is in the limiting domain, and the path is either a directory
         or a file that has no extension or ends in .html. URLs
         that include an "@" are not OK to follow.
-
-    Examples:
-        is_url_ok_to_follow("http://cs.uchicago.edu/pa/pa1", "cs.uchicago.edu") yields
-            True
-
-        is_url_ok_to_follow("http://cs.cornell.edu/pa/pa1", "cs.uchicago.edu") yields
-            False
     '''
 
     if "mailto:" in url:

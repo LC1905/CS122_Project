@@ -1,6 +1,6 @@
 # CS122 Project: Yelp Crawler
 #
-# Last modified: Feb 2 by Xibai Wang
+# Last modified: Feb 5 by Xibai Wang
 #
 
 import re
@@ -8,6 +8,7 @@ import bs4
 import sys
 import csv
 import util 
+import ratings
 
 starting_url = 'https://www.yelp.com/search?cflt=restaurants&find_loc=Chicago%2C+IL'
 limiting_domain = 'www.yelp.com'
@@ -36,7 +37,9 @@ def get_restr(page_url, soup, last_id):
             class_="biz-name js-analytics-click")[0]
         restr['name'] = url_find.text
         url_temp = url_find.get('href')
-        restr['url'] = util.convert_if_relative_url(page_url, url_temp)
+        url = util.convert_if_relative_url(page_url, url_temp)
+        restr['url'] = url
+        #restr['ratings'] = rating_database(url)
         
         rating_find = result.find_all('div', 
             class_="biz-rating biz-rating-large clearfix")[0]
