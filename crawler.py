@@ -1,6 +1,6 @@
 # CS122 Project: Yelp Crawler
 #
-# Last modified: Feb 5 by Xibai Wang
+# Last modified: Feb 5 6:20 pm by Shucen Liu
 #
 
 import re
@@ -20,15 +20,20 @@ def get_soup(url):
         soup = bs4.BeautifulSoup(text, 'html5lib')
     return soup
 
-def next_page(url, soup):
+def next_page(url):
+    soup = get_soup(url)
     pages = soup.find_all('a', 
         class_="available-number pagination-links_anchor")
-    next = pages[0].get('href')
-    next_url = util.convert_if_relative_url(url, next)
+    if len(pages) != 0:
+        next = pages[0].get('href')
+        next_url = util.convert_if_relative_url(url, next)
+    else:
+        next_url = None
     return next_url
 
 def get_restr(page_url, soup, last_id):
     restr_on_page = {}
+    ratings_dict = {}
     regular_results = soup.find_all('li', class_="regular-search-result")
     for result in regular_results:
         restr = {}
@@ -39,7 +44,8 @@ def get_restr(page_url, soup, last_id):
         url_temp = url_find.get('href')
         url = util.convert_if_relative_url(page_url, url_temp)
         restr['url'] = url
-        #restr['ratings'] = rating_database(url)
+        restr_ID = last_id
+        ratings_dict[restr_ID] = rating_database(url)
         
         rating_find = result.find_all('div', 
             class_="biz-rating biz-rating-large clearfix")[0]
@@ -53,4 +59,54 @@ def get_restr(page_url, soup, last_id):
         restr['nbh'] = address_find.span.text.strip()
         restr['address'] = address_find.address.text.strip()
         restr_on_page[last_id] = restr
-    return restr_on_page, last_id
+    return restr_on_page, ratings_dict, last_id
+
+def rating_database(url):
+    '''
+    Construct a database of ratings using the url that contains the ratings
+
+    Input: the url that contains all the ratings
+    Output: a dictionary that contains all the information about each rating
+    '''
+    soup = get_soup(url)
+    reviews = soup.find_all('div', itemprop = "review")
+    rating_dict = {}
+    for review in reviews:
+        rating = review.find_all("meta", itemprop = "ratingValue")[0].get("content")
+        date = review.find_all("meta", itemprop = "datePublished")[0].get("content")
+        author = review.find_all("meta", itemprop = "author")[0].get("content")
+        content = review.find_all("p", itemprop = "description")[0]
+        rating_id = author + date
+        if content != None:
+            content_text = content.text
+            content_text = content_text.replace("\n", " ")
+        dictionary = {}
+        dictionary["rating"] = rating
+        dictionary["date"] = date
+        dictionary["content"] = content_text
+        rating_dict[rating_id] = dictionary
+    return rating_dict
+
+def crawler(starting_url, max_num):
+    '''
+    Start from the url that contains the first page of restaurants in Chicago, 
+    crawl all the pages of restaurants, return two nested dictionary, one contains 
+    all the information about the restaurants, and another contains all the ratings
+
+    Input: the url of the first page of restaurants in Chicago
+            and the maximum number of pages to crawl
+    Output: one dictionary that contains information about restaurants, 
+            and one dictionary that contains all the ratings
+    '''
+    starting_soup = get_soup(starting_url)
+    restr_dict_all, rating_dict_all, last_id = get_restr(starting_url, starting_soup, 0)
+    next_url = next_page(starting_url)
+    for i in range(max_num):
+        if next_url != None:
+            next_soup = get_soup(next_url)
+            restr_on_page, ratings_on_page, last_id = get_restr(next_url, next_soup, last_id)
+            restr_dict_all.update(restr_on_page)
+            rating_dict_all.update(ratings_on_page)
+            next_url = next_page(next_url)
+
+    return restr_dict_all, rating_dict_all
