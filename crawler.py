@@ -140,7 +140,6 @@ def crawler(name, city, state, max_num):
             and one dictionary that contains all the ratings
     '''
     starting_url = create_url(name, city, state)
-    print(starting_url)
     starting_soup = get_soup(starting_url)
     restr_dict_all, rating_dict_all, last_id = get_restr(starting_url, starting_soup, 0, name)
     next_url = next_page(starting_url)
