@@ -17,7 +17,7 @@ limiting_domain = 'www.yelp.com'
 def create_url(name, city, state):
     '''
     Given the name of the restaurant, the city you live in, and the state,
-    return the Yelp url that contains all the search regular_results
+    return the Yelp url that contains all the search results
 
     Input: strings (restaurant name, city and state you live in)
     Output: the url that contains the search results of Yelp (a string)            
@@ -28,6 +28,8 @@ def create_url(name, city, state):
     city_new = "+".join(city_words)
     url = ("https://www.yelp.com/search?find_desc=" + name_new + 
         "&find_loc=" + city_new + "%2C+" + state)
+    if name == "null":
+        url = starting_url
     return url
 
 def get_soup(url):
