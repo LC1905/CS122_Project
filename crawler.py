@@ -26,8 +26,11 @@ def create_url(name, city, state):
     name_new = "+".join(name_words)
     city_words = city.split()
     city_new = "+".join(city_words)
-    url = ("https://www.yelp.com/search?find_desc=" + name_new + 
-        "&find_loc=" + city_new + "%2C+" + state)
+    if name == 'null':
+        url = ("https://www.yelp.com/search?find_loc=" + city_new + "%2C+" + state)
+    else:
+        url = ("https://www.yelp.com/search?find_desc=" + name_new + 
+            "&find_loc=" + city_new + "%2C+" + state)
     return url
 
 def get_soup(url):
@@ -130,11 +133,11 @@ def rating_database(url):
 
 def crawler(name, city, state, max_num):
     '''
-    Start from the url that contains the first page of restaurants in Chicago, 
+    Start from the url that contains the first page of search results, 
     crawl all the pages of restaurants, return two nested dictionary, one contains 
-    all the information about the restaurants, and another contains all the ratings
+    all the information about the restaurants with the given name, and another contains all the ratings
 
-    Input: the url of the first page of restaurants in Chicago
+    Input: the name, city, and state of the restaurant
             and the maximum number of pages to crawl
     Output: one dictionary that contains information about restaurants, 
             and one dictionary that contains all the ratings
