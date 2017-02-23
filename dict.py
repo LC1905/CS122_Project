@@ -26,13 +26,14 @@ def random_dict():
             if tag[0][1] in category:
                 cat = category[tag[0][1]]
                 related = list(swn.senti_synsets(word,cat))
-                if related != []:
+                corr_synset = [possible for possible in related if possible.synset.name().split('.')[0] == word]
+                if corr_synset != []:
                     genre = genres_code[random.randint(1, 4)]
                     genres[genre].append(word)
-                    pos = related[0].pos_score()
-                    neg = related[0].neg_score()
-                    obj = related[0].obj_score()
-                    score[word] = {'pos': pos, 'neg': neg, "obj": obj}
+                    pos = corr_synset[0].pos_score()
+                    neg = corr_synset[0].neg_score()
+                    obj = corr_synset[0].obj_score()
+                    score[word] = {'pos': pos, 'neg': neg, 'obj': obj}
         sentences.append(genres)
         word_to_score.append(score)
         i += 1
