@@ -8,7 +8,7 @@ from nltk.corpus import movie_reviews
 
 neg_ids = movie_reviews.fileids('neg')
 pos_ids = movie_reviews.fileids('pos')
-training_len = len(neg_ids+ pos_ids) * 3//4
+training_len = len(neg_ids+ pos_ids) * 1//100
 
 def add_polarity():
     neg_reviews = []
@@ -55,7 +55,7 @@ def generate_classifier(training_reviews):
 
 
 def classify(review):
-    classifier = generate_classifier(add_polarity()[:training_len])
+    classifier = generate_classifier(add_polarity()[1000:1200])
     classification = classifier.classify(extract_features(review))
     return classification
 
