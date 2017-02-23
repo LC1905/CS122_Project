@@ -26,12 +26,18 @@ def create_url(name, city, state):
     name_new = "+".join(name_words)
     city_words = city.split()
     city_new = "+".join(city_words)
-
+<<<<<<< HEAD
+    url = ("https://www.yelp.com/search?find_desc=" + name_new + 
+        "&find_loc=" + city_new + "%2C+" + state)
+    if name == "null":
+        url = starting_url
+=======
     if name == 'null':
         url = ("https://www.yelp.com/search?find_loc=" + city_new + "%2C+" + state)
     else:
         url = ("https://www.yelp.com/search?find_desc=" + name_new + 
             "&find_loc=" + city_new + "%2C+" + state)
+>>>>>>> ac5850123a9c0f8796531aa4e1b37d0c1759e29b
     return url
 
 def get_soup(url):
