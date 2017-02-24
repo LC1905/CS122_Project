@@ -13,7 +13,7 @@ category = {'JJ': 'a', 'JJR': 'a', 'JJS': 'a', 'PRP': 'n', 'NN': 'n', 'NNS': 'n'
 def random_dict():
     genres_code = {1: 'service', 2: 'food', 3: 'environment', 4: 'price'}
     sentences = []
-    word_to_score = []
+    word_to_score = {}
     i = 0
     while i < 100:
         genres = {'service': [], 'food': [], 'environment': [], 'price': []}
@@ -33,9 +33,7 @@ def random_dict():
                     pos = corr_synset[0].pos_score()
                     neg = corr_synset[0].neg_score()
                     obj = corr_synset[0].obj_score()
-                    score[word] = {'pos': pos, 'neg': neg, 'obj': obj}
+                    word_to_score[word] = {'pos': pos, 'neg': neg, 'obj': obj}
         sentences.append(genres)
-        word_to_score.append(score)
         i += 1
-
     return sentences, word_to_score
