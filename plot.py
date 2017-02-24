@@ -19,40 +19,43 @@ def sample_df_all():
     sample_df = pd.DataFrame([restr1,restr2,restr3], columns = header)
     return sample_df
 
-def select_restr(restr, sel_by, df, max_num):
+
+def select_restr(restr, order, df, max_num):
     '''
-    Select restaurants to be plotted.
+    Select restaurants to be plotted. 
     Input:
-        restr: (str) name of restaurant
-        sel_by: (list) order to select by. e.g. ['nbh','category','price']
+        restr: (list) name (and nbh) of the restaurant
+        order: (list) order of selection, any combination of nbh, price, category
         df: dataframe from crawler
             columns = ['restr','score','category','price','address','nbh', 'url']
         max_num: max number of other restaurants to include on the plot 
     Return: filtered dataframe
     '''
-    my_restr = df.loc
-
-def select_restr(restr, nbh, df, max_num):
-
-    restr_df = df[(df['restr'] == restr) & (df['nbh'] == nbh)]
-    restr_name = restr_df['restr'][0]
-    restr_cat = restr_df['category'][0]
-    restr_price = restr_df['price'][0]
-    # Select all restr in the same neighborhood
-    select_df = df[(df['nbh'] == nbh) & (df['restr'] != restr_name)]
-    if len(select_df) >= max_num:
-        # Drop restr of different category
-        to_drop = select_df[(select_df['category'] != restr_cat)]
-        if len(to_drop) >= len(select_df) - max_num:
-            select_df = select_df.drop(to_drop.index[:len(select_df) - max_num])
+    if len(restr) == 1:
+        my_restr = df.loc[df['restr'] == restr[0]]
+    elif len(restr) == 2:
+        my_restr = df.loc[(df['restr'] == restr[0]) & (df['nbh'] == restr[1])]
+    df_ls = []
+    for i in my_restr.index:
+        restr_i = my_restr.loc[i]
+        value = [restr_i[x] for x in order]
+        selection = df[(df[order[0]]==value[0]) & (df[order[1]]==value[1]) & (df[order[2]]==value[2])]
+        if len(selection) >= max_num:
+            selection = selection[:max_num]
         else:
-            select_df = select_df.drop(to_drop.index)[:max_num]
-    if len(select_df) < max_num:
-        # Add restr from other neighborhoods of the same category and price
-        to_add = df[df['category'] == restr_cat and df['price'] == restr_price]
-        select_df.append(to_add[:max_num-len(select_df)])
-    restr_df = restr_df.append(select_df)
-    return restr_df
+            sel1 = df[(df[order[0]]==value[0]) & (df[order[1]]==value[1])]
+            if len(sel1) + len(selection) >= max_num:
+                sel1 = sel1[:(max_num-len(selection)+1)]
+            else:
+                sel2 = df[df[order[0]]==value[0]]
+                if len(selection) + len(sel1) + len(sel2) >= max_num:
+                    sel2 = sel2[:(max_num-len(selection)-len(sel1)+1)]
+            selection = selection.append(sel1).append(sel2).drop_duplicates()
+            print(selection)
+        restr_i.append(selection)
+        df_ls.append(restr_i)
+
+    return df_ls
 
 def get_score(restr_df):
     '''
@@ -69,7 +72,11 @@ def plot_scatter(restr_df):
     food_scores = restr_df['food_s']
     service_scores = restr_df['serv_s']
     fig, ax = plt.subplots()
-    ax.scatter(food_scores, service_scores)
+    plt.title('Restaurant Comparison')
+    plt.scatter(food_scores, service_scores)
+    plt.scatter(food_scores[0],service_scores[0], s=np.pi*6**2, color='red')
+    ax.set_xlabel('food score')
+    ax.set_ylabel('service score')
     for i, txt in enumerate(names):
         ax.annotate(txt, (food_scores[i],service_scores[i]))
     fig.show()
