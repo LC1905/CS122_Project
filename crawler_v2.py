@@ -117,12 +117,14 @@ def get_restr(page_url, soup, last_id, restr_name):
         nbh_ls.append(address_find.span.text.strip())
         address_ls.append(address_find.address.text.strip())
         restr_on_page[last_id] = restr
+    
     d = {'name': pd.Series(name_ls, index=index_ls),
         'score': pd.Series(score_ls, index=index_ls),
         'type': pd.Series(type_ls, index=index_ls), 
         'price': pd.Series(price_ls, index=index_ls),
         'neighborhood': pd.Series(nbh_ls, index=index_ls),
         'address': pd.Series(address_ls, index=index_ls)}
+    
     restaurants_info = pd.DataFrame(d)
     return restaurants_info, ratings_dict, last_id
 
@@ -164,19 +166,20 @@ def crawler(name, city, state, max_num):
     Output: one dictionary that contains information about restaurants, 
             and one dictionary that contains all the ratings
     '''
+    frames = []
     starting_url = create_url(name, city, state)
     starting_soup = get_soup(starting_url)
-    restr_dict_all, rating_dict_all, last_id = get_restr(starting_url, starting_soup, 0, name)
+    restaurants_info, rating_dict_all, last_id = get_restr(starting_url, starting_soup, 0, name)
     next_url = next_page(starting_url)
+    frames.append(restaurants_info)
     for i in range(max_num):
         if next_url != None:
             next_soup = get_soup(next_url)
             restr_on_page, ratings_on_page, last_id = get_restr(next_url, next_soup, last_id, name)
-            restr_dict_all.update(restr_on_page)
+            frames.append(restr_on_page)
             rating_dict_all.update(ratings_on_page)
-            if len(restr_on_page) >= 20:
-                next_url = next_page(next_url)
-            else:
-                break
+            next_url = next_page(next_url)
 
-    return restr_dict_all, rating_dict_all
+    restr_info = pd.concat(frames)
+
+    return restr_info, rating_dict_all
