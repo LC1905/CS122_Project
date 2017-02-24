@@ -4,10 +4,10 @@ import pandas as pd
 import calculate_score
 
 def sample_df_init():
-    header = ['restr','score', 'category','price','address','nbh', 'url']
-    restr1 = ['Sample1',4, 'American','$$','address','Hyde Park','url']
-    restr2 = ['Sample2',3.5, 'Japanese', '$$', 'address','Hyde Park','url']
-    restr3 = ['Sample3',4, 'American','$$$','address','Hyde Park','url']
+    header = ['restr','score', 'category','price','address','nbh']
+    restr1 = ['Sample1',4, 'American','$$','address','Hyde Park']
+    restr2 = ['Sample2',3.5, 'Japanese', '$$', 'address','Hyde Park']
+    restr3 = ['Sample3',4, 'American','$$$','address','Hyde Park']
     sample_df = pd.DataFrame([restr1,restr2,restr3], columns = header)
     return sample_df
 
@@ -19,17 +19,21 @@ def sample_df_all():
     sample_df = pd.DataFrame([restr1,restr2,restr3], columns = header)
     return sample_df
 
-def select_restr(restr, nbh, df, max_num):
+def select_restr(restr, sel_by, df, max_num):
     '''
     Select restaurants to be plotted.
     Input:
         restr: (str) name of restaurant
-        nbh: (str) neighborhood (to deal with multiple locations)
+        sel_by: (list) order to select by. e.g. ['nbh','category','price']
         df: dataframe from crawler
             columns = ['restr','score','category','price','address','nbh', 'url']
         max_num: max number of other restaurants to include on the plot 
     Return: filtered dataframe
     '''
+    my_restr = df.loc
+
+def select_restr(restr, nbh, df, max_num):
+
     restr_df = df[(df['restr'] == restr) & (df['nbh'] == nbh)]
     restr_name = restr_df['restr'][0]
     restr_cat = restr_df['category'][0]

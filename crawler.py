@@ -1,7 +1,5 @@
 # CS122 Project: Yelp Crawler
-#
-# Last modified: Feb 9 4:50 pm by Shucen Liu
-#
+
 
 import re
 import bs4
@@ -9,8 +7,9 @@ import sys
 import csv
 import util 
 import ratings
-
-starting_url = 'https://www.yelp.com/search?cflt=restaurants&find_loc=Chicago%2C+IL'
+import numpy as np
+import pandas as pd
+initial_url = 'https://www.yelp.com/search?cflt=restaurants&find_loc=Chicago%2C+IL'
 limiting_domain = 'www.yelp.com'
 
 
@@ -26,9 +25,8 @@ def create_url(name, city, state):
     name_new = "+".join(name_words)
     city_words = city.split()
     city_new = "+".join(city_words)
-
-    if name == 'null':
-        url = ("https://www.yelp.com/search?find_loc=" + city_new + "%2C+" + state)
+    if name == "null":
+        url = initial_url
     else:
         url = ("https://www.yelp.com/search?find_desc=" + name_new + 
             "&find_loc=" + city_new + "%2C+" + state)
@@ -78,33 +76,54 @@ def get_restr(page_url, soup, last_id, restr_name):
     '''
     restr_on_page = {}
     ratings_dict = {}
+    name_ls = []
+    type_ls = []
+    price_ls = []
+    index_ls = []
+    nbh_ls = []
+    address_ls = []
+    score_ls = []
     regular_results = soup.find_all('li', class_="regular-search-result")
     for result in regular_results:
         restr = {}
         last_id += 1
         url_find = result.find_all('a', 
             class_="biz-name js-analytics-click")[0]
-        if url_find.text.lower() == restr_name.lower():
-            restr['name'] = url_find.text
-            url_temp = url_find.get('href')
-            url = util.convert_if_relative_url(page_url, url_temp)
-            restr['url'] = url
-            restr_ID = last_id
-            ratings_dict[restr_ID] = rating_database(url)
-            
-            rating_find = result.find_all('div', 
-                class_="biz-rating biz-rating-large clearfix")[0]
-            num_temp = re.findall('[0-9]+', rating_find.text)
-            restr['num_rvw'] = int(num_temp[0])
-            score_find = rating_find.find_all('div')[0]
-            restr['score'] = score_find.get('title')[:3]
+        # if url_find.text.lower() == restr_name.lower():
+        name_ls.append(url_find.text)
+        url_temp = url_find.get('href')
+        url = util.convert_if_relative_url(page_url, url_temp)
+        restr_ID = last_id
+        index_ls.append(restr_ID)
+        ratings_dict[restr_ID] = rating_database(url)
+        
+        rating_find = result.find_all('div', 
+            class_="biz-rating biz-rating-large clearfix")[0]
+        # num_temp = re.findall('[0-9]+', rating_find.text)
+        # restr['num_rvw'] = int(num_temp[0])
+        score_find = rating_find.find_all('div')[0]
+        category_find = result.find_all('span', class_ = 'category-str-list')[0]
+        price_find = result.find_all('span', class_ = 'business-attribute price-range')[0]
+        score_ls.append(score_find.get('title')[:3])
+        type_ls.append(category_find.text.strip('\n').strip(' ').split()[0].strip(","))
+        price_ls.append(price_find.text)
 
-            address_find = result.find_all('div', 
-                class_="secondary-attributes")[0]
-            restr['nbh'] = address_find.span.text.strip()
-            restr['address'] = address_find.address.text.strip()
-            restr_on_page[last_id] = restr
-    return restr_on_page, ratings_dict, last_id
+        address_find = result.find_all('div', 
+            class_="secondary-attributes")[0]
+        nbh_ls.append(address_find.span.text.strip())
+        address_ls.append(address_find.address.text.strip())
+        restr_on_page[last_id] = restr
+    
+    d = {'restr': pd.Series(name_ls, index=index_ls),
+        'score': pd.Series(score_ls, index=index_ls),
+        'category': pd.Series(type_ls, index=index_ls), 
+        'price': pd.Series(price_ls, index=index_ls),
+        'nbh': pd.Series(nbh_ls, index=index_ls),
+        'address': pd.Series(address_ls, index=index_ls)}
+    
+    restaurants_info = pd.DataFrame(d)
+    return restaurants_info, ratings_dict, last_id
+
 
 def rating_database(url):
     '''
@@ -143,19 +162,20 @@ def crawler(name, city, state, max_num):
     Output: one dictionary that contains information about restaurants, 
             and one dictionary that contains all the ratings
     '''
+    frames = []
     starting_url = create_url(name, city, state)
     starting_soup = get_soup(starting_url)
-    restr_dict_all, rating_dict_all, last_id = get_restr(starting_url, starting_soup, 0, name)
+    restaurants_info, rating_dict_all, last_id = get_restr(starting_url, starting_soup, 0, name)
     next_url = next_page(starting_url)
+    frames.append(restaurants_info)
     for i in range(max_num):
         if next_url != None:
             next_soup = get_soup(next_url)
             restr_on_page, ratings_on_page, last_id = get_restr(next_url, next_soup, last_id, name)
-            restr_dict_all.update(restr_on_page)
+            frames.append(restr_on_page)
             rating_dict_all.update(ratings_on_page)
-            if len(restr_on_page) >= 20:
-                next_url = next_page(next_url)
-            else:
-                break
+            next_url = next_page(next_url)
 
-    return restr_dict_all, rating_dict_all
+    restr_info = pd.concat(frames)
+    restr_info = restr_info[['restr','score','category','price','nbh','address']]
+    return restr_info, rating_dict_all
