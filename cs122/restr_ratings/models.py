@@ -7,6 +7,7 @@ class Restaurant(models.Model):
     restr_cuisine = models.CharField(max_length=20)
     restr_price = models.CharField(max_length=200)
     restr_neighborhood = models.CharField(max_length=30)
+    restr_url = models.CharField(max_length=200)
     def __str__(self):
     	return self.restr_name
 

@@ -56,7 +56,7 @@ ROOT_URLCONF = 'cs122.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [ r'restr_ratings/'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
