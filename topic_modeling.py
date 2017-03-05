@@ -88,9 +88,6 @@ def find_category(sentence):
     ambience_chance = np.inner(ambience_vector, vector)
     price_chance = np.inner(price_vector, vector)
     topic = sorted([(food_chance, 'food'), (service_chance, 'service'), (ambience_chance, 'ambience'), (price_chance, 'price')])
-    if topic[-1][0] > topic[-2][0]:
+    if topic[-1][0] != 0:
         return topic[-1][1]
-    elif topic[-1][0] != 0:
-        return (topic[-1][1], topic[-2][1])
-
 
