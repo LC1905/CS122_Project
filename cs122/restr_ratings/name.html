@@ -1,0 +1,6 @@
+<form action="/restr_ratings/restaurant/" method="post">
+	{% csrf_token %}
+    <label for="restaurant">Restaurant: </label>
+    <input id="restaurant" type="text" name="restaurant" value="{{ current_name }}">
+    <input type="submit" value="OK">
+</form>
