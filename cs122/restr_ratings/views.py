@@ -1,12 +1,14 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
-from .forms import NameForm
+from .forms import SearchForm
 
 def get_name(request):
+	context = {}
 	if request.method == 'POST':
-		form = NameForm(request.POST)
+		form = SearchForm(request.POST)
+		# plot
 		return HttpResponse('thanks.')
 	else:
-		form = NameForm()
-
-	return render(request, 'name.html', {'form': form})
+		form = SearchForm()
+	context['form'] = form
+	return render(request, 'name.html', context)
