@@ -1,5 +1,6 @@
 from django import forms
 
+
 class SearchForm(forms.Form):
 	restr = forms.CharField(
 		label = 'Restaurant', 
