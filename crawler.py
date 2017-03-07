@@ -1,36 +1,23 @@
 # CS122 Project: Yelp Crawler
 
-
 import re
 import bs4
 import sys
 import csv
 import util 
+import os
+import sys
 import ratings
 import numpy as np
 import pandas as pd
+import django
+
+sys.path.append('../CS122_Project/cs122/')
+
+from restr_ratings.models import Restaurant, Rating
 initial_url = 'https://www.yelp.com/search?cflt=restaurants&find_loc=Chicago%2C+IL'
 limiting_domain = 'www.yelp.com'
 
-
-def create_url(name, city, state):
-    '''
-    Given the name of the restaurant, the city you live in, and the state,
-    return the Yelp url that contains all the search results
-
-    Input: strings (restaurant name, city and state you live in)
-    Output: the url that contains the search results of Yelp (a string)            
-    '''
-    name_words = name.split()
-    name_new = "+".join(name_words)
-    city_words = city.split()
-    city_new = "+".join(city_words)
-    if name == "null":
-        url = initial_url
-    else:
-        url = ("https://www.yelp.com/search?find_desc=" + name_new + 
-            "&find_loc=" + city_new + "%2C+" + state)
-    return url
 
 def get_soup(url):
     '''
@@ -42,90 +29,67 @@ def get_soup(url):
     request = util.get_request(url)
     if request != None:
         text = request.text
-        soup = bs4.BeautifulSoup(text, 'html5lib')
+        soup = bs4.BeautifulSoup(text)
     return soup
 
-def next_page(url):
+def next_page(url, page_num):
     '''
     Find the url of next page of search results
 
-    Input: the initial url
+    Input: the initial url, initial page number
     Output: the url of next page of results
     '''
     soup = get_soup(url)
     pages = soup.find_all('a', 
         class_="available-number pagination-links_anchor")
-    if len(pages) != 0:
-        next = pages[0].get('href')
-        next_url = util.convert_if_relative_url(url, next)
-    else:
-        next_url = None
-    return next_url
+    for page in pages:
+        num = int(page.text.strip())
+        if num == page_num + 1:
+            next = page.get('href')
+            next_url = util.convert_if_relative_url(url, next)
+            break
+        else:
+            next_url = None
+    return next_url, page_num + 1
 
-def get_restr(page_url, soup, last_id, restr_name):
+def get_restr(page_url, soup):
     '''
     Given the url of the first page of search results of a restaurant, return the information
     of all the restaurants in the search results which have the same name of 
     the restaurant we search for 
-
-    Input: the url of the first page of search result on Yelp, the soup object
-            of this url, the number of restaurants already crawled, and 
-            the restaurant name we are interested in
-    Output: dictionaries that contain restaurant profiles, and ratings of each
-            restaurant
     '''
-    restr_on_page = {}
-    ratings_dict = {}
-    name_ls = []
-    type_ls = []
-    price_ls = []
-    index_ls = []
-    nbh_ls = []
-    address_ls = []
-    score_ls = []
     regular_results = soup.find_all('li', class_="regular-search-result")
     for result in regular_results:
         restr = {}
-        last_id += 1
         url_find = result.find_all('a', 
             class_="biz-name js-analytics-click")[0]
-        # if url_find.text.lower() == restr_name.lower():
-        name_ls.append(url_find.text)
+        name = url_find.text
         url_temp = url_find.get('href')
-        url = util.convert_if_relative_url(page_url, url_temp)
-        restr_ID = last_id
-        index_ls.append(restr_ID)
-        ratings_dict[restr_ID] = rating_database(url)
-        
+        url = util.convert_if_relative_url(page_url, url_temp)        
         rating_find = result.find_all('div', 
             class_="biz-rating biz-rating-large clearfix")[0]
-        # num_temp = re.findall('[0-9]+', rating_find.text)
-        # restr['num_rvw'] = int(num_temp[0])
         score_find = rating_find.find_all('div')[0]
         category_find = result.find_all('span', class_ = 'category-str-list')[0]
         price_find = result.find_all('span', class_ = 'business-attribute price-range')[0]
-        score_ls.append(score_find.get('title')[:3])
-        type_ls.append(category_find.text.strip('\n').strip(' ').split()[0].strip(","))
-        price_ls.append(price_find.text)
-
+        score = score_find.get('title')[:3]
+        cuisine = category_find.text.strip('\n').strip(' ').split()[0].strip(",")
+        price = price_find.text
         address_find = result.find_all('div', 
             class_="secondary-attributes")[0]
-        nbh_ls.append(address_find.span.text.strip())
-        address_ls.append(address_find.address.text.strip())
-        restr_on_page[last_id] = restr
-    
-    d = {'restr': pd.Series(name_ls, index=index_ls),
-        'score': pd.Series(score_ls, index=index_ls),
-        'category': pd.Series(type_ls, index=index_ls), 
-        'price': pd.Series(price_ls, index=index_ls),
-        'nbh': pd.Series(nbh_ls, index=index_ls),
-        'address': pd.Series(address_ls, index=index_ls)}
-    
-    restaurants_info = pd.DataFrame(d)
-    return restaurants_info, ratings_dict, last_id
+        nbh = address_find.span.text.strip()
+        address = address_find.address.text.strip()
+        r = Restaurant(restr_name = name,
+                    restr_address = address,
+                    restr_score = score,
+                    restr_cuisine = cuisine,
+                    restr_price = price,
+                    restr_neighborhood = nbh,
+                    restr_url = url)
+        r.save()
+        rating_database(url, 0, r, 19)
+    # return Restaurant
 
-
-def rating_database(url):
+def rating_database(url, i, restr, max_num):
     '''
     Construct a database of ratings using the url that contains the ratings
 
@@ -134,7 +98,6 @@ def rating_database(url):
     '''
     soup = get_soup(url)
     reviews = soup.find_all('div', itemprop = "review")
-    rating_dict = {}
     for review in reviews:
         rating = review.find_all("meta", itemprop = "ratingValue")[0].get("content")
         date = review.find_all("meta", itemprop = "datePublished")[0].get("content")
@@ -144,38 +107,29 @@ def rating_database(url):
         if content != None:
             content_text = content.text
             content_text = content_text.replace("\n", " ")
-        dictionary = {}
-        dictionary["rating"] = rating
-        dictionary["date"] = date
-        dictionary["content"] = content_text
-        rating_dict[rating_id] = dictionary
-    return rating_dict
+        restr.rating_set.create(rating_text = content_text, rating_date = date, rating_score = rating)
+    next_url, page_num = next_page(url, i + 1)
+    i += 1
+    if i <= max_num:
+        if next_url != None:
+            rating_database(next_url, i, restr, max_num)
+    
 
-def crawler(name, city, state, max_num):
+def crawler(starting_url, max_num, page_num):
     '''
     Start from the url that contains the first page of search results, 
     crawl all the pages of restaurants, return two nested dictionary, one contains 
-    all the information about the restaurants with the given name, and another contains all the ratings
-
-    Input: the name, city, and state of the restaurant
-            and the maximum number of pages to crawl
-    Output: one dictionary that contains information about restaurants, 
-            and one dictionary that contains all the ratings
+    all the information about the restaurants with the given name, and another contains all the ratings3
     '''
-    frames = []
-    starting_url = create_url(name, city, state)
     starting_soup = get_soup(starting_url)
-    restaurants_info, rating_dict_all, last_id = get_restr(starting_url, starting_soup, 0, name)
-    next_url = next_page(starting_url)
-    frames.append(restaurants_info)
-    for i in range(max_num):
+    get_restr(starting_url, starting_soup)
+    next_url = next_page(starting_url, page_num)[0]
+    for i in range(page_num, page_num + max_num):
         if next_url != None:
             next_soup = get_soup(next_url)
-            restr_on_page, ratings_on_page, last_id = get_restr(next_url, next_soup, last_id, name)
-            frames.append(restr_on_page)
-            rating_dict_all.update(ratings_on_page)
-            next_url = next_page(next_url)
+            get_restr(next_url, next_soup)
+            next_page_url, next_page_num = next_page(next_url, i + 1)
+            next_url = next_page_url
 
-    restr_info = pd.concat(frames)
-    restr_info = restr_info[['restr','score','category','price','nbh','address']]
-    return restr_info, rating_dict_all
+    return next_url, next_page_num
+    
