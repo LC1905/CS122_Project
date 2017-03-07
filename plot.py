@@ -18,6 +18,7 @@ def find_restr(args, Restaurant, max_num):
         my_restr = Restaurant.objects.filter(restr_name = restr[0], restr_neighborhood = restr[1])
     else:
         my_restr = Restaurant.objects.filter(restr_name = restr[0])
+    all_ls = []
     for restr_i in my_restr:
         name_i = restr_i.restr_name
         nbh_i = restr_i.restr_neighborhood
@@ -43,21 +44,25 @@ def find_restr(args, Restaurant, max_num):
         ls1 = [i.restr_name for i in sel1]
         ls2 = [i.restr_name for i in sel2]
         restr_ls = list(set(ls + ls1 + ls2))[:max_num]
-        return restr_ls
+        restr_ls = restr_ls.remove(restr).insert(0, restr)
+        all_ls.append(restr_ls)
+    return all_ls
 
-'''
-def plot_scatter(restr_df):
-
-    names = restr_df['restr']
-    food_scores = restr_df['food_s']
-    service_scores = restr_df['serv_s']
+def plot_scatter(restr_ls, Restaurant):
+    name_ls = []
+    food_score_ls = []
+    service_score_ls = []
+    for restr in restr_ls:
+        name_ls.append(restr.restr_name)
+        food_score_ls.append(restr.food_score)
+        service_score_ls.append(restr.service_score)
     fig, ax = plt.subplots()
     plt.title('Restaurant Comparison')
-    plt.scatter(food_scores, service_scores)
-    plt.scatter(food_scores[0],service_scores[0], s=np.pi*6**2, color='red')
-    ax.set_xlabel('food score')
-    ax.set_ylabel('service score')
-    for i, txt in enumerate(names):
-        ax.annotate(txt, (food_scores[i],service_scores[i]))
+    plt.scatter(food_score_ls, service_score_ls)
+    plt.scatter(food_score_ls[0], service_score_ls[0], s=np.pi*6**2, color='red')
+    ax.set_xlabel('food_score')
+    ax.set_ylabel('service_score')
+    for i, txt in enumerate(name_ls):
+        ax.annotate(txt, (food_score_ls[i], service_score_ls[i]))
     fig.show()
-'''
+    return fig
