@@ -1,6 +1,39 @@
-<form action="/restr_ratings/restaurant/" method="post">
-	{% csrf_token %}
-    <label for="restaurant">Restaurant: </label>
-    <input id="restaurant" type="text" name="restaurant" value="{{ current_name }}">
-    <input type="submit" value="OK">
-</form>
+<html>
+    <head>
+        <title>Restaurants</title>
+    </head>
+    <body>
+        <div id="header">
+            <h1>Compare the Restaurants</h1>
+        </div>
+        <div class="frame">
+            <form action="/restr_ratings/restaurant/" method="post">
+            	{% csrf_token %}
+            	<table class = 'form'>
+            	{{ form }}
+                </table>
+                <input type="submit" value="Submit!">
+            </form>
+        </div>
+
+        <div class="frame">
+            {% if summary != None %}
+            <div class="summary">
+                <table class="restaurants">
+                    <tr>
+                        {% for col in columns %}
+                        <th>{{ col }}</th>
+                        {% endfor %}
+                    </tr>
+                    {% for entry in summary %}
+                    <tr>
+                        {% for col in entry %}
+                        <td>{{ col }}</td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            {% endif %}
+    </body>
+</html>

@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
+from .forms import SearchForm
 from restr_ratings.models import Restaurant, Rating
 from django import forms
 COLUMN_NAMES = [
@@ -65,5 +66,5 @@ def get_name(request):
         form = SearchForm()
     context['form'] = form
     # return context['summary']
-
+>>>>>>> bb9cb89808cb5ff551222a3520db956f11b81f29
     return render(request, 'name.html', context)

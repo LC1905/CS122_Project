@@ -8,6 +8,11 @@ class Restaurant(models.Model):
     restr_price = models.CharField(max_length=200)
     restr_neighborhood = models.CharField(max_length=30)
     restr_url = models.CharField(max_length=200)
+    food_score = models.FloatField(default = -1, editable = True)
+    service_score = models.FloatField(default = -1, editable = True)
+    ambience_score = models.FloatField(default = -1, editable = True)
+    price_score = models.FloatField(default = -1, editable = True)
+
     def __str__(self):
     	return self.restr_name
 
