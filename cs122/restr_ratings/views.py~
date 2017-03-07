@@ -66,5 +66,5 @@ def get_name(request):
         form = SearchForm()
     context['form'] = form
     # return context['summary']
-
+>>>>>>> bb9cb89808cb5ff551222a3520db956f11b81f29
     return render(request, 'name.html', context)

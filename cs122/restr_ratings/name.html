@@ -15,5 +15,25 @@
                 <input type="submit" value="Submit!">
             </form>
         </div>
+
+        <div class="frame">
+            {% if summary != None %}
+            <div class="summary">
+                <table class="restaurants">
+                    <tr>
+                        {% for col in columns %}
+                        <th>{{ col }}</th>
+                        {% endfor %}
+                    </tr>
+                    {% for entry in summary %}
+                    <tr>
+                        {% for col in entry %}
+                        <td>{{ col }}</td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            {% endif %}
     </body>
 </html>
