@@ -3,10 +3,6 @@ import random
 from nltk.corpus import gutenberg
 from nltk.corpus import sentiwordnet as swn
 
-bible = gutenberg.words('bible-kjv.txt')
-bible = [word for word in bible if word.isalpha()]
-length = len(bible)
-
 category = {'JJ': 'a', 'JJR': 'a', 'JJS': 'a', 'PRP': 'n', 'NN': 'n', 'NNS': 'n', 'NNP': 'n',
 'NNPS': 'n', 'RB': 'r', 'RBR': 'r', 'RBS': 'r', 'VBD': 'v', 'VBG': 'v', 'VBN': 'v', 'VBP': 'v', 'VBZ': 'v'}
 
