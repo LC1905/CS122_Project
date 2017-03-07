@@ -2,6 +2,8 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
 from restr_ratings.models import Restaurant, Rating
 from django import forms
+import plot
+
 COLUMN_NAMES = [
         'Name',
         'Neighborhood',
@@ -12,15 +14,18 @@ COLUMN_NAMES = [
         'Price_rating',
 ]
 
-restr_ls = ['Girl & the Goat', 'Oriole', 'Eden', 'Alinea', 'Lowcountry']
-
-
+MAX_NUM = 7
 
 class SearchForm(forms.Form):
     restr = forms.CharField(
         label = 'Restaurant', 
         max_length = 100,
         required = True)
+    location = forms.CharField(
+        labels = 'Location',
+        help_text = 'Specify branch location. (Optional)'
+        max_length = 100,
+        required = False)
     nbh = forms.IntegerField(
         label = 'Rank Neighborhood', 
         help_text = 'e.g. 1 (meaning the most important)',
@@ -45,22 +50,28 @@ def get_name(request):
     context = {}
     if request.method == 'POST':
         form = SearchForm(request.POST)
-
-        # plot
-        context['columns'] = COLUMN_NAMES
-        summary = []
-        for restr in restr_ls:
-            r = Restaurant.objects.get(restr_name = restr)
-            row = [r.restr_name, r.restr_neighborhood, r.restr_cuisine, r.food_score, r.ambience_score, r.service_score, r.price_score]
-            summary.append(row)
-        # name_ls = [Restaurant.objects.get(restr_name = restr).restr_name for restr in restr_ls]
-        # nbh_ls = [Restaurant.objects.get(restr_name = restr).restr_neighborhood for restr in restr_ls]
-        # cuisine_ls = [Restaurant.objects.get(restr_name = restr).restr_cuisine for restr in restr_ls]
-        # food_ls = [Restaurant.objects.get(restr_name = restr).food_score for restr in restr_ls]
-        # ambience_ls = [Restaurant.objects.get(restr_name = restr).ambience_score for restr in restr_ls]
-        # service_ls = [Restaurant.objects.get(restr_name = restr).service_score for restr in restr_ls]
-        # price_ls = [Restaurant.objects.get(restr_name = restr).price_score for restr in restr_ls]
-        context['summary'] = summary
+        if form.is_valid():
+            args = {}
+            restr = form.clean_data['restr']
+            location = forms.clean_data['location']
+            nbh = form.clean_data['nbh']
+            catg = form.clean_data['catg']
+            price = form.clean_data['price']
+            args['restr'] = [restr]
+            if location:
+                args['restr'] = [restr, location]
+            ls = sorted([[nbh,'nbh'],[price,'price'],[catg,'category']])
+            args['order'] = [i[1] for i in ls]
+            # plot
+            try:
+                restr_ls = plot.find_restr(args, Restaurant, MAX_NUM)
+            context['columns'] = COLUMN_NAMES
+            summary = []
+            for restr in restr_ls:
+                r = Restaurant.objects.get(restr_name = restr)
+                row = [r.restr_name, r.restr_neighborhood, r.restr_cuisine, r.food_score, r.ambience_score, r.service_score, r.price_score]
+                summary.append(row)
+            context['summary'] = summary
     else:
         form = SearchForm()
     context['form'] = form
