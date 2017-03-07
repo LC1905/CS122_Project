@@ -6,11 +6,16 @@ from gensim import corpora, models
 import gensim
 import crawler
 import numpy as np
+from nltk.corpus import sentiwordnet as swn
 
 food = ['food', 'taste', 'dish', 'savory', 'sweet', 'salty', 'eat', 'flavor']
 service = ['service', 'friendly', 'quick', 'attitude', 'staff', 'efficient']
 ambience = ['clean', 'location', 'space', 'classy', 'room', 'look']
 price = ['price', 'cheap', 'expensive', 'quite', 'inexpensive', 'affordable', 'bill','overpriced']
+
+nltk_category = {'JJ': 'a', 'JJR': 'a', 'JJS': 'a', 'PRP': 'n', 'NN': 'n', 'NNS': 'n', 'NNP': 'n',
+'NNPS': 'n', 'RB': 'r', 'RBR': 'r', 'RBS': 'r', 'VBD': 'v', 'VBG': 'v', 'VBN': 'v', 'VBP': 'v', 'VBZ': 'v'}
+
 food_vector = np.array(8 * [1] + 20 * [0])
 service_vector = np.array(8 * [0] + 6 * [1] + 14 * [0])
 ambience_vector = np.array(14 * [0] + 6 * [1] + 8 * [0])
@@ -34,6 +39,7 @@ def find_vector(sentence):
     stemmed_service = [p_stemmer.stem(word) for word in service]
     stemmed_ambience = [p_stemmer.stem(word) for word in ambience]
     stemmed_price = [p_stemmer.stem(word) for word in price]
+    vocabularies = stemmed_food + stemmed_service + stemmed_ambience + stemmed_price
     for vocabulary in vocabularies:
         if vocabulary in sentence:
             vector.append(1)
@@ -53,9 +59,34 @@ def find_category(sentence):
         return topic[-1][1]
 
 
+def calc_score(word):
+    word_to_score = {}
+    tag = nltk.pos_tag([word])
+    '''
+    if tag[0][1] in nltk_category:
+        cat = nltk_category[tag[0][1]]
+        related = list(swn.senti_synsets(word,cat))
+        corr_synset = [possible for possible in related if possible.synset.name().split('.')[0] == word]
+        if corr_synset != []:
+            pos = corr_synset[0].pos_score()
+            neg = corr_synset[0].neg_score()
+            obj = corr_synset[0].obj_score()
+            word_to_score = {'pos': pos, 'neg': neg, 'obj': obj}
+    else:
+    '''
+    related = list(swn.senti_synsets(word))
+    corr_synset = [possible for possible in related if possible.synset.name().split('.')[0] == word]
+    if corr_synset != []:
+        pos = corr_synset[0].pos_score()
+        neg = corr_synset[0].neg_score()
+        obj = corr_synset[0].obj_score()
+        word_to_score = {'pos': pos, 'neg': neg, 'obj': obj}
+    return word_to_score
+
+
 def review_analysis(review):
-    review_sentiment = {'food':[], 'service':[], 'price':[], 'ambience':[]}
-    review_count = {'food':[], 'service':[], 'price':[], 'ambience': []}
+    review_sentiment = {'food': {}, 'service': {}, 'price': {}, 'ambience': {}}
+    review_count = {}
     en_stop = get_stop_words('en')
     p_stemmer = PorterStemmer()
     sentences = nltk.sent_tokenize(review)
@@ -64,6 +95,12 @@ def review_analysis(review):
         sentence = [word.lower() for word in sentence if word.isalpha()]
         sentence = [word for word in sentence if not word in en_stop]
         sentence_stemmed = [p_stemmer.stem(word) for word in sentence]
-        category = find_category(sentence_stemmed)
+        if find_category(sentence_stemmed) != None:
+            category = find_category(sentence_stemmed)
+            for word in sentence:
+                review_count[word] = review_count.get(word, 0) + 1
+                review_sentiment[category][word] = calc_score(word)
+    return review_sentiment, review_count
+
 
 
