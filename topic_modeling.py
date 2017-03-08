@@ -13,7 +13,7 @@ import numpy as np
 food = ['food', 'taste', 'dish', 'savory', 'sweet', 'salty', 'eat', 'flavor', 'tasty', 'yummy']
 service = ['service', 'friendly', 'quick', 'attitude', 'staff', 'efficient', 'slow', 'inefficient']
 ambience = ['clean', 'location', 'space', 'classy', 'room', 'look', 'vibe', 'comfy', 'comfortable', 'homey']
-price = ['price', 'cheap', 'expensive', 'quite', 'inexpensive', 'affordable', 'bill','overpriced', 'reasonable']
+price = ['$', 'price', 'cheap', 'expensive', 'quite', 'inexpensive', 'affordable', 'bill','overpriced', 'reasonable']
 food_vector = np.array(8 * [1] + 20 * [0])
 service_vector = np.array(8 * [0] + 6 * [1] + 14 * [0])
 ambience_vector = np.array(14 * [0] + 6 * [1] + 8 * [0])

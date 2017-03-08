@@ -6,6 +6,7 @@ from gensim import corpora, models
 import gensim
 import crawler
 import numpy as np
+import nltk_simplify.py
 from nltk.corpus import sentiwordnet as swn
 
 food = ['food', 'taste', 'dish', 'savory', 'sweet', 'salty', 'eat', 'flavor']
@@ -59,28 +60,23 @@ def find_category(sentence):
         return topic[-1][1]
 
 
-def calc_score(word):
+def calc_score(sentence):
     word_to_score = {}
-    tag = nltk.pos_tag([word])
-    '''
-    if tag[0][1] in nltk_category:
-        cat = nltk_category[tag[0][1]]
-        related = list(swn.senti_synsets(word,cat))
-        corr_synset = [possible for possible in related if possible.synset.name().split('.')[0] == word]
-        if corr_synset != []:
-            pos = corr_synset[0].pos_score()
-            neg = corr_synset[0].neg_score()
-            obj = corr_synset[0].obj_score()
-            word_to_score = {'pos': pos, 'neg': neg, 'obj': obj}
-    else:
-    '''
-    related = list(swn.senti_synsets(word))
-    corr_synset = [possible for possible in related if possible.synset.name().split('.')[0] == word]
-    if corr_synset != []:
-        pos = corr_synset[0].pos_score()
-        neg = corr_synset[0].neg_score()
-        obj = corr_synset[0].obj_score()
-        word_to_score = {'pos': pos, 'neg': neg, 'obj': obj}
+    sentence = nltk.word_tokenize(sentence)
+    words = [word for word in sentence if word.isalpha()]
+    for word in sentence:
+        tag = nltk.pos_tag([word])
+        pos = nltk_simplify.simplify_wsj_tag(tag[0][1]).lower()
+        related = list(swn.senti_synsets(word))
+        for possible in related:
+            if possible.synset.name().split('.')[0] == word and possible.synset.pos() == pos:
+                corr_synset = possible
+                if corr_synset != None:
+                    pos = corr_synset.pos_score()
+                    neg = corr_synset.neg_score()
+                    obj = corr_synset.obj_score()
+                    word_to_score[word] = {'pos': pos, 'neg': neg, 'obj': obj}
+
     return word_to_score
 
 
