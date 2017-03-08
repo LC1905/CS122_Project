@@ -6,7 +6,7 @@ from gensim import corpora, models
 import gensim
 import crawler
 import numpy as np
-import nltk_simplify.py
+import nltk_simplify
 from nltk.corpus import sentiwordnet as swn
 
 food = ['food', 'taste', 'dish', 'savory', 'sweet', 'salty', 'eat', 'flavor']

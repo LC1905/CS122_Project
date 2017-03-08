@@ -1,17 +1,14 @@
 import sys
 import matplotlib.pyplot as plt
 import numpy as np
-
+import analysis
 
 sys.path.append('../CS122_Project/cs122/')
 from restr_ratings.models import Restaurant, Rating
 
-def unique(seq):
-    seen = set()
-    seen_add = seen.add
-    return [x for x in seq if not (x in seen or seen_add(x))]
+MAX_NUM = 7
 
-def find_restr(args, Restaurant, max_num):
+def find_restr(args, Restaurant, MAX_NUM):
     '''
     E.g. args = {'restr': ['Eden'], 'order': ['nbh','price','category']}
     Output: list of restaurant names
@@ -46,11 +43,14 @@ def find_restr(args, Restaurant, max_num):
         elif order[0] == 'category':
             sel2 = Restaurant.objects.filter(restr_cuisine = category_i)
 
-        ls = [i.restr_name for i in selection]
-        ls.insert(0, restr[0])
-        ls1 = [i.restr_name for i in sel1]
-        ls2 = [i.restr_name for i in sel2]
-        restr_ls = list(unique(ls + ls1 + ls2))[:max_num + 1]
+        all_selection = selection | sel1 | sel2
+        restr_ls = [i.restr_name for i in all_selection[:max_num + 1]]
+        for selected in all_selection[:max_num + 1]:
+            all_reviews = Rating.objects.filter(restaurant = selected)
+            all_texts = ' '.join([str(review) for review in all_reviews[:4]])
+            review_sentiment, review_count = analysis.review_analysis(all_texts)
+            # calculate individual restaurant score based on all reviews
+            # update scores to database
         all_ls.append(restr_ls)
     return all_ls
 
