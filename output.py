@@ -8,7 +8,7 @@ from restr_ratings.models import Restaurant, Rating
 
 MAX_NUM = 7
 
-def find_restr(args, Restaurant, MAX_NUM):
+def find_restr(args, Restaurant, max_num):
     '''
     E.g. args = {'restr': ['Eden'], 'order': ['nbh','price','category']}
     Output: list of restaurant names
@@ -44,9 +44,9 @@ def find_restr(args, Restaurant, MAX_NUM):
             sel2 = Restaurant.objects.filter(restr_cuisine = category_i)
 
         all_selection = selection | sel1 | sel2
-        restr_ls = [i.restr_name for i in all_selection[:max_num + 1]]
-        for selected in all_selection[:max_num + 1]:
-            all_reviews = Rating.objects.filter(restaurant = selected)
+        restr_ls = all_selection[: max_num+1]
+        for selected in restr_ls:
+            all_reviews = selected.rating_set.all()
             all_texts = ' '.join([str(review) for review in all_reviews[:4]])
             review_sentiment, review_count = analysis.review_analysis(all_texts)
             # calculate individual restaurant score based on all reviews

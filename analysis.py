@@ -60,13 +60,12 @@ def find_category(sentence):
 
 
 def calc_score(word):
-    #word_to_score = {}
-    #sentence = nltk.word_tokenize(sentence)
-    #words = [word for word in sentence if word.isalpha()]
-    #for word in sentence:
-    tag = nltk.pos_tag([word])
-    pos = nltk_simplify.simplify_wsj_tag(tag[0][1]).lower()
+    word_to_score = {}
+    pos_score = 0
+    neg_score = 0
+    obj_score = 0
     related = list(swn.senti_synsets(word))
+<<<<<<< HEAD
     for possible in related:
         if possible.synset.name().split('.')[0] == word and possible.synset.pos() == pos:
             corr_synset = possible
@@ -76,6 +75,15 @@ def calc_score(word):
                 obj = corr_synset.obj_score()
                 word_to_score = {'pos': pos, 'neg': neg, 'obj': obj}
                 return word_to_score
+=======
+    if related != []:
+        for possible in related:
+            pos_score += possible.pos_score()
+            neg_score += possible.neg_score()
+            obj_score += possible.obj_score()
+        word_to_score[word] = {'pos': pos_score/len(related), 'neg': neg_score/len(related), 'obj': obj_score/len(related)}
+    return word_to_score
+>>>>>>> d21e6a0b5d5d0823a6f80ea15f667f60f709b971
 
 
 def review_analysis(review):

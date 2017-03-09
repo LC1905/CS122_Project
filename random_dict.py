@@ -6,7 +6,7 @@ from nltk.corpus import sentiwordnet as swn
 category = {'JJ': 'a', 'JJR': 'a', 'JJS': 'a', 'PRP': 'n', 'NN': 'n', 'NNS': 'n', 'NNP': 'n',
 'NNPS': 'n', 'RB': 'r', 'RBR': 'r', 'RBS': 'r', 'VBD': 'v', 'VBG': 'v', 'VBN': 'v', 'VBP': 'v', 'VBZ': 'v'}
 
-def random_dict():
+def random_dict(length):
     genres_code = {1: 'service', 2: 'food', 3: 'environment', 4: 'price'}
     sentences = []
     word_to_score = {}
