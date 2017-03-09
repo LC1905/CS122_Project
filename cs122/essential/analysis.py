@@ -1,17 +1,10 @@
 import nltk
-import bs4
-import gensim
+import training
 import numpy as np
 from stop_words import get_stop_words
-from nltk.stem.porter import PorterStemmer
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
-from gensim import corpora, models
-
 from nltk.corpus import sentiwordnet as swn
-
-from essential import nltk_simplify, training
-
 '''
 food = ['food', 'taste', 'dish', 'savory', 'sweet', 'salty', 'eat', 'flavor']
 service = ['service', 'friendly', 'quick', 'attitude', 'staff', 'efficient']
@@ -29,16 +22,6 @@ service_vector = np.array(100*[0]+100*[1]+200*[0])
 ambience_vector = np.array(200*[0]+100*[1]+100*[0])
 price_vector = np.array(300*[0]+100*[1])
 
-'''
-def process_vocabulary():
-    p_stemmer = PorterStemmer()
-    stemmed_food = [p_stemmer.stem(word) for word in food]
-    stemmed_service = [p_stemmer.stem(word) for word in service]
-    stemmed_ambience = [p_stemmer.stem(word) for word in ambience]
-    stemmed_price = [p_stemmer.stem(word) for word in price]
-    return stemmed_food, stemmed_service, stemmed_ambience, stemmed_price
-'''
-
 
 def find_vector(sentence):
     wnl = WordNetLemmatizer()
@@ -53,7 +36,11 @@ def find_vector(sentence):
 
 
 def find_category(sentence):
+<<<<<<< HEAD
     length = len(sentence)
+=======
+    length = len(sentence.split())
+>>>>>>> cf1ef6e22a36c2623910a8b66a55a0fd65c67338
     vector = np.array(find_vector(sentence))
     food_chance = np.inner(food_vector, vector)
     service_chance = np.inner(service_vector, vector)
@@ -83,7 +70,6 @@ def review_analysis(review):
     review_sentiment = {}
     review_count = {'food': {}, 'service': {}, 'price': {}, 'ambience':{}}
     en_stop = get_stop_words('en')
-    #p_stemmer = PorterStemmer()
     sentences = nltk.sent_tokenize(review)
     for sentence in sentences:
         sentence = nltk.word_tokenize(sentence)

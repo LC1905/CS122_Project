@@ -59,7 +59,7 @@ def test_topics():
         if analysis.find_category(test) == tests[test]:
             print("This one is: ", True, i)
             i += 1
-        #print("This one is: ", False)
+       
 
 
 
