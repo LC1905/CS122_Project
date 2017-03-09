@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import calculate_score
+import sys
 
 sys.path.append('../CS122_Project/cs122/')
 
