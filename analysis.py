@@ -4,7 +4,7 @@ from stop_words import get_stop_words
 from nltk.stem.porter import PorterStemmer
 from gensim import corpora, models
 import gensim
-import crawler
+#import crawler
 import numpy as np
 import nltk_simplify
 from nltk.corpus import sentiwordnet as swn
@@ -60,24 +60,24 @@ def find_category(sentence):
         return topic[-1][1]
 
 
-def calc_score(sentence):
-    word_to_score = {}
-    sentence = nltk.word_tokenize(sentence)
-    words = [word for word in sentence if word.isalpha()]
-    for word in sentence:
-        tag = nltk.pos_tag([word])
-        pos = nltk_simplify.simplify_wsj_tag(tag[0][1]).lower()
-        related = list(swn.senti_synsets(word))
-        for possible in related:
-            if possible.synset.name().split('.')[0] == word and possible.synset.pos() == pos:
-                corr_synset = possible
-                if corr_synset != None:
-                    pos = corr_synset.pos_score()
-                    neg = corr_synset.neg_score()
-                    obj = corr_synset.obj_score()
-                    word_to_score[word] = {'pos': pos, 'neg': neg, 'obj': obj}
+def calc_score(word):
+    #word_to_score = {}
+    #sentence = nltk.word_tokenize(sentence)
+    #words = [word for word in sentence if word.isalpha()]
+    #for word in sentence:
+    tag = nltk.pos_tag([word])
+    pos = nltk_simplify.simplify_wsj_tag(tag[0][1]).lower()
+    related = list(swn.senti_synsets(word))
+    for possible in related:
+        if possible.synset.name().split('.')[0] == word and possible.synset.pos() == pos:
+            corr_synset = possible
+            if corr_synset != None:
+                pos = corr_synset.pos_score()
+                neg = corr_synset.neg_score()
+                obj = corr_synset.obj_score()
+                word_to_score = {'pos': pos, 'neg': neg, 'obj': obj}
 
-    return word_to_score
+                return word_to_score
 
 
 def review_analysis(review):
@@ -95,6 +95,7 @@ def review_analysis(review):
             category = find_category(sentence_stemmed)
             for word in sentence:
                 review_count[word] = review_count.get(word, 0) + 1
+                #word_score = {word: calc_score(word)}          
                 review_sentiment[category][word] = calc_score(word)
     return review_sentiment, review_count
 
