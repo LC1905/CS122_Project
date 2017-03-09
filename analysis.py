@@ -2,6 +2,8 @@ import nltk
 import bs4
 from stop_words import get_stop_words
 from nltk.stem.porter import PorterStemmer
+from nltk.stem import WordNetLemmatizer
+from nltk.tokenize import word_tokenize
 from gensim import corpora, models
 import gensim
 import numpy as np
@@ -74,6 +76,7 @@ def calc_score(word):
 
 
 def review_analysis(review):
+    wnl = WordNetLemmatizer()
     review_sentiment = {}
     review_count = {'food': {}, 'service': {}, 'price': {}, 'ambience':{}}
     en_stop = get_stop_words('en')
@@ -87,6 +90,10 @@ def review_analysis(review):
         if find_category(sentence_stemmed) != None:
             category = find_category(sentence_stemmed)
             for word in sentence:
+                wnl.lemmatize(word,'v')
+                tokens = [token.lower() for token in word_tokenize(word)]
+                lemmatized = [wnl.lemmatize(token) for token in tokens]
+                word = lemmatized[0]
                 if not word in review_count[category]:
                     review_count[category][word] = 0
                 review_count[category][word] += 1       
