@@ -30,11 +30,11 @@ def find_restr(args, Restaurant, max_num):
         selection = Restaurant.objects.filter(restr_neighborhood = nbh_i, restr_price = price_i, 
                                               restr_cuisine = category_i)
 
-        if 'nbh' in order[:2] and 'price' in order[:2]:
+        if ('nbh' in order[:2]) and ('price' in order[:2]):
             sel1 = Restaurant.objects.filter(restr_neighborhood = nbh_i, restr_price = price_i)
-        elif 'nbh' in order[:2] and 'category' in order[2]:
+        elif ('nbh' in order[:2]) and ('category' in order[:2]):
             sel1 = Restaurant.objects.filter(restr_neighborhood = nbh_i, restr_cuisine = category_i)
-        elif 'price' in order[:2] and 'category' in order[2]:
+        elif ('price' in order[:2]) and ('category' in order[:2]):
             sel1 = Restaurant.objects.filter(restr_price = price_i, restr_cuisine = category_i)
 
         if order[0] == 'nbh':
