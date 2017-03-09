@@ -51,7 +51,7 @@ def find_restr(args, Restaurant, max_num):
             all_texts = ' '.join([str(review) for review in all_reviews[:4]])
             if all_texts:
                 review_sentiment, review_count = analysis.review_analysis(all_texts)
-            print(review_sentiment, review_count)
+            return review_sentiment, review_count
             selected.food_score = 40 + len(selected.restr_name)
             selected.service_score = 50 + len(selected.restr_name)**2
             selected.price_score = 36

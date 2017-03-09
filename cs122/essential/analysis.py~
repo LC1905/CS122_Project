@@ -1,18 +1,17 @@
 import nltk
 import bs4
+import gensim
 import numpy as np
 from stop_words import get_stop_words
 from nltk.stem.porter import PorterStemmer
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
-<<<<<<< HEAD:analysis.py
-=======
 from gensim import corpora, models
 import numpy as np
-import nltk_simplify
->>>>>>> 7b0f237c43640618ae6acec03d5637d62643d810:cs122/essential/analysis.py~
+
 from nltk.corpus import sentiwordnet as swn
-import training
+
+from essential import nltk_simplify, training
 
 '''
 food = ['food', 'taste', 'dish', 'savory', 'sweet', 'salty', 'eat', 'flavor']
@@ -93,8 +92,8 @@ def review_analysis(review):
         sentence = [word for word in sentence if not word in en_stop]
         sentence = [wnl.lemmatize(word, 'v') for word in sentence]
         sentence = [wnl.lemmatize(word) for word in sentence]
-        if find_category(sentence_stemmed) != None:
-            category = find_category(sentence_stemmed)
+        if find_category(sentence) != None:
+            category = find_category(sentence)
             for word in sentence:
                 if not word in review_count[category]:
                     review_count[category][word] = 0
