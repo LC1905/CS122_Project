@@ -7,7 +7,6 @@ from nltk.stem.porter import PorterStemmer
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
 from gensim import corpora, models
-import numpy as np
 
 from nltk.corpus import sentiwordnet as swn
 
@@ -54,6 +53,7 @@ def find_vector(sentence):
 
 
 def find_category(sentence):
+    #length = len(sentence.split())
     length = len(sentence)
     vector = np.array(find_vector(sentence))
     food_chance = np.inner(food_vector, vector)
