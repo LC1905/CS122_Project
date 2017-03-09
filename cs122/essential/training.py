@@ -1,7 +1,7 @@
 import csv
 import nltk
-from nltk.stem.porter import PorterStemmer
 from stop_words import get_stop_words
+from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
 
 def read_training():
@@ -18,23 +18,30 @@ def read_training():
     ambience = [sentence for sentence in ambience[1:] if sentence != '']
     price = [sentence for sentence in price[1:] if sentence != '']
     return food, service, ambience, price
+
+
+def process_sentence(sentence):
+    wnl = WordNetLemmatizer()
+    en_stop = get_stop_words('en')
+    sentence = nltk.word_tokenize(sentence)
+    sentence = [word.lower() for word in sentence if word.isalpha()]
+    sentence = [wnl.lemmatize(word, 'v') for word in sentence if not word in en_stop]
+    sentence = [wnl.lemmatize(word) for word in sentence]
+    return sentence
     
 
 def raw_dictionary(category):
     dictionary = []
     wnl = WordNetLemmatizer()
     en_stop = get_stop_words('en')
-    p_stemmer = PorterStemmer()
     for sentence in category:
-        words = nltk.word_tokenize(sentence)
-        dictionary += [word.lower() for word in words if word.isalpha()]
-        dictionary = [wnl.lemmatize(word, 'v') for word in dictionary if word not in en_stop]
-        dictionary = [wnl.lemmatize(word) for word in dictionary]
+        dictionary += process_sentence(sentence)
     fdist = nltk.FreqDist(dictionary)
     return fdist.most_common()
 
 
-def overlap(word, food, service, ambience, price, threshold = 50):
+
+def overlap(word, food, service, ambience, price, threshold = 100):
     food, service, ambience, price = food[:threshold], service[:threshold], ambience[:threshold], price[:threshold]
     if word in food and word in service:
         return True
@@ -63,3 +70,4 @@ def process_dictionary():
     ambience_voc = [word for word in ambience_voc if not overlap(word, food_voc, service_voc, ambience_voc, price_voc)]
     price_voc = [word for word in price_voc if not overlap(word, food_voc, service_voc, ambience_voc, price_voc)]
     return food_voc[:100], service_voc[:100], ambience_voc[:100], price_voc[:100]
+
