@@ -2,9 +2,10 @@ import nltk
 import bs4
 from stop_words import get_stop_words
 from nltk.stem.porter import PorterStemmer
+from nltk.stem import WordNetLemmatizer
+from nltk.tokenize import word_tokenize
 from gensim import corpora, models
 import gensim
-#import crawler
 import numpy as np
 import nltk_simplify
 from nltk.corpus import sentiwordnet as swn
@@ -61,7 +62,6 @@ def find_category(sentence):
 
 
 def calc_score(word):
-    word_to_score = {}
     pos_score = 0
     neg_score = 0
     obj_score = 0
@@ -71,13 +71,14 @@ def calc_score(word):
             pos_score += possible.pos_score()
             neg_score += possible.neg_score()
             obj_score += possible.obj_score()
-        word_to_score[word] = {'pos': pos_score/len(related), 'neg': neg_score/len(related), 'obj': obj_score/len(related)}
-    return word_to_score
+        word_to_score = {'pos': pos_score/len(related), 'neg': neg_score/len(related), 'obj': obj_score/len(related)}
+        return word_to_score
 
 
 def review_analysis(review):
-    review_sentiment = {'food': {}, 'service': {}, 'price': {}, 'ambience': {}}
-    review_count = {}
+    wnl = WordNetLemmatizer()
+    review_sentiment = {}
+    review_count = {'food': {}, 'service': {}, 'price': {}, 'ambience':{}}
     en_stop = get_stop_words('en')
     p_stemmer = PorterStemmer()
     sentences = nltk.sent_tokenize(review)
@@ -89,9 +90,14 @@ def review_analysis(review):
         if find_category(sentence_stemmed) != None:
             category = find_category(sentence_stemmed)
             for word in sentence:
-                review_count[word] = review_count.get(word, 0) + 1
-                #word_score = {word: calc_score(word)}          
-                review_sentiment[category][word] = calc_score(word)
+                wnl.lemmatize(word,'v')
+                tokens = [token.lower() for token in word_tokenize(word)]
+                lemmatized = [wnl.lemmatize(token) for token in tokens]
+                word = lemmatized[0]
+                if not word in review_count[category]:
+                    review_count[category][word] = 0
+                review_count[category][word] += 1       
+                review_sentiment[word] = calc_score(word)
     return review_sentiment, review_count
 
 
