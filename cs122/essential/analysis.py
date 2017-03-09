@@ -39,7 +39,11 @@ def find_vector(sentence):
 
 
 def find_category(sentence):
+<<<<<<< HEAD
+    length = len(sentence)
+=======
     length = len(sentence.split())
+>>>>>>> cf1ef6e22a36c2623910a8b66a55a0fd65c67338
     vector = np.array(find_vector(sentence))
     food_chance = np.inner(food_vector, vector)
     service_chance = np.inner(service_vector, vector)
