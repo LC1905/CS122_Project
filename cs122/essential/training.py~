@@ -3,13 +3,14 @@ import nltk
 from nltk.stem.porter import PorterStemmer
 from stop_words import get_stop_words
 from nltk.stem import WordNetLemmatizer
+import sys, os
+sys.path.append('/essential')
 
 def read_training():
     food, service, ambience, price = [], [], [], []
-    with open('training.csv','r') as training:
-        csv_reader = csv.reader(training, skipinitialspace = True)
+    with open('/home/student/CS122_Project/cs122/essential/training.csv','r') as training:
+        csv_reader = csv.reader(training)
         for row in csv_reader:
-            #print(row)
             food.append(row[0])
             service.append(row[1])
             ambience.append(row[2])
@@ -19,6 +20,7 @@ def read_training():
     ambience = [sentence for sentence in ambience[1:] if sentence != '']
     price = [sentence for sentence in price[1:] if sentence != '']
     return food, service, ambience, price
+    
 
 def raw_dictionary(category):
     dictionary = []

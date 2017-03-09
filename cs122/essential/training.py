@@ -3,6 +3,8 @@ import nltk
 from nltk.stem.porter import PorterStemmer
 from stop_words import get_stop_words
 from nltk.stem import WordNetLemmatizer
+import sys, os
+
 
 def read_training():
     food, service, ambience, price = [], [], [], []
