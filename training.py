@@ -1,27 +1,35 @@
 import csv
 import nltk
+from nltk.stem.porter import PorterStemmer
+from stop_words import get_stop_words
+from nltk.stem import WordNetLemmatizer
 
 def read_training():
     food, service, ambience, price = [], [], [], []
     with open('training.csv','r') as training:
         csv_reader = csv.reader(training, skipinitialspace = True)
         for row in csv_reader:
-            print(row)
+            #print(row)
             food.append(row[0])
             service.append(row[1])
             ambience.append(row[2])
             price.append(row[3])
-    food = [sentence.lower() for sentence in food[1:] if sentence != '']
-    service = [sentence.lower() for sentence in service[1:] if sentence != '']
-    ambience = [sentence.lower() for sentence in ambience[1:] if sentence != '']
-    price = [sentence.lower() for sentence in price[1:] if sentence != '']
+    food = [sentence for sentence in food[1:] if sentence != '']
+    service = [sentence for sentence in service[1:] if sentence != '']
+    ambience = [sentence for sentence in ambience[1:] if sentence != '']
+    price = [sentence for sentence in price[1:] if sentence != '']
     return food, service, ambience, price
 
 def raw_dictionary(category):
     dictionary = []
+    wnl = WordNetLemmatizer()
+    en_stop = get_stop_words('en')
+    p_stemmer = PorterStemmer()
     for sentence in category:
         words = nltk.word_tokenize(sentence)
-        dictionary += [word for word in words if word.isalpha()]
+        dictionary += [word.lower() for word in words if word.isalpha()]
+        dictionary = [wnl.lemmatize(word, 'v') for word in dictionary if word not in en_stop]
+        dictionary = [wnl.lemmatize(word) for word in dictionary]
     fdist = nltk.FreqDist(dictionary)
     return fdist.most_common()
 

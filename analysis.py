@@ -4,24 +4,29 @@ from stop_words import get_stop_words
 from nltk.stem.porter import PorterStemmer
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
-from gensim import corpora, models
-import gensim
+#from gensim import corpora, models
+#import gensim
 import numpy as np
 import nltk_simplify
 from nltk.corpus import sentiwordnet as swn
+import training
 
+'''
 food = ['food', 'taste', 'dish', 'savory', 'sweet', 'salty', 'eat', 'flavor']
 service = ['service', 'friendly', 'quick', 'attitude', 'staff', 'efficient']
 ambience = ['clean', 'location', 'space', 'classy', 'room', 'look']
 price = ['price', 'cheap', 'expensive', 'quite', 'inexpensive', 'affordable', 'bill','overpriced']
+'''
 
 nltk_category = {'JJ': 'a', 'JJR': 'a', 'JJS': 'a', 'PRP': 'n', 'NN': 'n', 'NNS': 'n', 'NNP': 'n',
 'NNPS': 'n', 'RB': 'r', 'RBR': 'r', 'RBS': 'r', 'VBD': 'v', 'VBG': 'v', 'VBN': 'v', 'VBP': 'v', 'VBZ': 'v'}
 
-food_vector = np.array(8 * [1] + 20 * [0])
-service_vector = np.array(8 * [0] + 6 * [1] + 14 * [0])
-ambience_vector = np.array(14 * [0] + 6 * [1] + 8 * [0])
-price_vector = np.array(20 * [0] + 8 * [1])
+food, service, ambience, price = training.process_dictionary()
+price[99] = '$'
+food_vector = np.array(100*[1]+300*[0])
+service_vector = np.array(100*[0]+100*[1]+200*[0])
+ambience_vector = np.array(200*[0]+100*[1]+100*[0])
+price_vector = np.array(300*[0]+100*[1])
 
 '''
 def process_vocabulary():
@@ -35,15 +40,11 @@ def process_vocabulary():
 
 
 def find_vector(sentence):
+    wnl = WordNetLemmatizer()
     vector = []
-    p_stemmer = PorterStemmer()
-    stemmed_food = [p_stemmer.stem(word) for word in food]
-    stemmed_service = [p_stemmer.stem(word) for word in service]
-    stemmed_ambience = [p_stemmer.stem(word) for word in ambience]
-    stemmed_price = [p_stemmer.stem(word) for word in price]
-    vocabularies = stemmed_food + stemmed_service + stemmed_ambience + stemmed_price
-    for vocabulary in vocabularies:
-        if vocabulary in sentence:
+    vocabulary = food + service + ambience + price
+    for word in vocabulary:
+        if word in sentence:
             vector.append(1)
         else:
             vector.append(0)
@@ -51,13 +52,14 @@ def find_vector(sentence):
 
 
 def find_category(sentence):
+    length = len(sentence.split())
     vector = np.array(find_vector(sentence))
     food_chance = np.inner(food_vector, vector)
     service_chance = np.inner(service_vector, vector)
     ambience_chance = np.inner(ambience_vector, vector)
     price_chance = np.inner(price_vector, vector)
     topic = sorted([(food_chance, 'food'), (service_chance, 'service'), (ambience_chance, 'ambience'), (price_chance, 'price')])
-    if topic[-1][0] != 0:
+    if topic[-1][0]/length >= 0.01:
         return topic[-1][1]
 
 
@@ -80,20 +82,17 @@ def review_analysis(review):
     review_sentiment = {}
     review_count = {'food': {}, 'service': {}, 'price': {}, 'ambience':{}}
     en_stop = get_stop_words('en')
-    p_stemmer = PorterStemmer()
+    #p_stemmer = PorterStemmer()
     sentences = nltk.sent_tokenize(review)
     for sentence in sentences:
         sentence = nltk.word_tokenize(sentence)
         sentence = [word.lower() for word in sentence if word.isalpha()]
         sentence = [word for word in sentence if not word in en_stop]
-        sentence_stemmed = [p_stemmer.stem(word) for word in sentence]
+        sentence = [wnl.lemmatize(word, 'v') for word in sentence]
+        sentence = [wnl.lemmatize(word) for word in sentence]
         if find_category(sentence_stemmed) != None:
             category = find_category(sentence_stemmed)
             for word in sentence:
-                wnl.lemmatize(word,'v')
-                tokens = [token.lower() for token in word_tokenize(word)]
-                lemmatized = [wnl.lemmatize(token) for token in tokens]
-                word = lemmatized[0]
                 if not word in review_count[category]:
                     review_count[category][word] = 0
                 review_count[category][word] += 1       
