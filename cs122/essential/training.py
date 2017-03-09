@@ -6,7 +6,7 @@ from nltk.stem import WordNetLemmatizer
 
 def read_training():
     food, service, ambience, price = [], [], [], []
-    with open('essential/training.csv','r') as training:
+    with open('../essential/training.csv','r') as training:
         csv_reader = csv.reader(training, skipinitialspace = True)
         for row in csv_reader:
             #print(row)
