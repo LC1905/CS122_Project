@@ -70,9 +70,9 @@ def get_name(request):
         for i, restr_ls in enumerate(all_ls):
             fig = output.plot_scatter(restr_ls, Restaurant)
             canvas = FigureCanvas(fig)
-            graphic_i = django.http.HttpResponse(content_type ='image/png')
-            canvas.print_png(graphic_i)
-            context['graphic'+str(i)] = graphic_i
+            #graphic_i = django.http.HttpResponse(content_type ='image/png')
+            #canvas.print_png(graphic_i)
+            #context['graphic'+str(i)] = graphic_i
         context['columns'] = COLUMN_NAMES             
         for i, restr_ls in enumerate(all_ls):
             summary = []

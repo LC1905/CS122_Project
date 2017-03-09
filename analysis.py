@@ -1,16 +1,12 @@
 import nltk
 import bs4
-import gensim
 import numpy as np
 from stop_words import get_stop_words
 from nltk.stem.porter import PorterStemmer
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
-from gensim import corpora, models
-
 from nltk.corpus import sentiwordnet as swn
-
-from essential import nltk_simplify, training
+from essential import training
 
 '''
 food = ['food', 'taste', 'dish', 'savory', 'sweet', 'salty', 'eat', 'flavor']
@@ -53,10 +49,7 @@ def find_vector(sentence):
 
 
 def find_category(sentence):
-<<<<<<< HEAD
     #length = len(sentence.split())
-=======
->>>>>>> 6772432e3158f539af1c0b5b5033b2d2b31d5835
     length = len(sentence)
     vector = np.array(find_vector(sentence))
     food_chance = np.inner(food_vector, vector)
