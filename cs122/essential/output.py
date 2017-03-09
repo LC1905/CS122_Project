@@ -1,7 +1,7 @@
 import sys
 import matplotlib.pyplot as plt
 import numpy as np
-from essential import analysis
+from essential import analysis, calculate_score
 
 sys.path.append('../CS122_Project')
 sys.path.append('../CS122_Project/cs122/')
@@ -51,13 +51,11 @@ def find_restr(args, Restaurant, max_num):
             all_texts = ' '.join([str(review) for review in all_reviews[:4]])
             if all_texts:
                 review_sentiment, review_count = analysis.review_analysis(all_texts)
-            return review_sentiment, review_count
-            selected.food_score = 40 + len(selected.restr_name)
-            selected.service_score = 50 + len(selected.restr_name)**2
-            selected.price_score = 36
-            selected.ambience_score = 73
-            # calculate individual restaurant score based on all reviews
-            # update scores to database
+            scores = calculate_score.get_score(review_sentiment, review_count)
+            selected.food_score = scores[0]
+            selected.service_score = scores[1]
+            selected.price_score = scores[2]
+            selected.ambience_score = scores[3]
         all_ls.append(restr_ls)
     return all_ls
 

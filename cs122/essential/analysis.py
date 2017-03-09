@@ -4,6 +4,11 @@ import numpy as np
 from stop_words import get_stop_words
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
+<<<<<<< HEAD
+=======
+from gensim import corpora, models
+
+>>>>>>> 6d661a9aecb1acd58d36e26f1bc362f99754e7e0
 from nltk.corpus import sentiwordnet as swn
 
 '''
@@ -37,6 +42,7 @@ def find_vector(sentence):
 
 
 def find_category(sentence):
+    #length = len(sentence.split())
     length = len(sentence)
     vector = np.array(find_vector(sentence))
     food_chance = np.inner(food_vector, vector)
