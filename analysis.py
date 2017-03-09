@@ -7,7 +7,6 @@ from nltk.tokenize import word_tokenize
 #from gensim import corpora, models
 #import gensim
 import numpy as np
-import nltk_simplify
 from nltk.corpus import sentiwordnet as swn
 import training
 
