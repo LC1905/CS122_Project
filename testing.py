@@ -54,10 +54,17 @@ tests = {"The BEER STEAMED CLAMS was also a perfect marriage of two of my favori
 "Of course, spending $50 just sounds silly.":"price"}
 
 def test_topics():
+    i = 1
     for test in tests:
         if analysis.find_category(test) == tests[test]:
+<<<<<<< HEAD
             print("This one is: ", True)
         print("This one is: ", False)
+=======
+            print("This one is: ", True, i)
+            i += 1
+        #print("This one is: ", False)
+>>>>>>> 3db10e5fe8256f3c3d39f0d2bc65fe2788e24ddb
 
 
 

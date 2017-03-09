@@ -23,8 +23,12 @@ class SearchForm(forms.Form):
         max_length = 100,
         required = True)
     location = forms.CharField(
+<<<<<<< HEAD
         labels = 'Location',
-        help_text = 'Specify branch location. (Optional)'
+=======
+        label = 'Location',
+>>>>>>> c68e37803f506369053836edc9921cbe1d4595bc
+        help_text = 'Specify branch location. (Optional)',
         max_length = 100,
         required = False)
     nbh = forms.IntegerField(
@@ -61,18 +65,23 @@ def get_name(request):
         if location:
             args['restr'] = [restr, location]
         ls = sorted([[nbh,'nbh'],[price,'price'],[catg,'category']])
+<<<<<<< HEAD
         args['order'] = [i[1] for i in ls]
         
-        try:
-            all_ls = output.find_restr(args, Restaurant, MAX_NUM)
-            for i, restr_ls in enumerate(all_ls):
-                fig = output.plot_scatter(restr_ls, Restaurant)
-                canvas = FigureCanvas(fig)
-                graphic_i = django.http.HttpResponse(content_type ='image/png')
-                canvas.print_png(graphic_i)
-                context['graphic'+str(i)] = graphic_i
-                
-        context['columns'] = COLUMN_NAMES            
+=======
+        args['order'] = [i[1] for i in ls]        
+>>>>>>> c68e37803f506369053836edc9921cbe1d4595bc
+        all_ls = output.find_restr(args, Restaurant, MAX_NUM)
+        for i, restr_ls in enumerate(all_ls):
+            fig = output.plot_scatter(restr_ls, Restaurant)
+            canvas = FigureCanvas(fig)
+            graphic_i = django.http.HttpResponse(content_type ='image/png')
+            canvas.print_png(graphic_i)
+            context['graphic'+str(i)] = graphic_i
+<<<<<<< HEAD
+        context['columns'] = COLUMN_NAMES             
+=======
+>>>>>>> c68e37803f506369053836edc9921cbe1d4595bc
         for i, restr_ls in enumerate(all_ls):
             summary = []
             for r in restr_ls:
@@ -80,6 +89,7 @@ def get_name(request):
                 summary.append(row)
             context['summary'+str(i)] = summary
         context['table_num'] = len(all_ls)
+        context['columns'] = COLUMN_NAMES
     else:
         form = SearchForm()
     context['form'] = form
