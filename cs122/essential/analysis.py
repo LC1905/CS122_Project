@@ -1,5 +1,5 @@
 import nltk
-import training
+from essential import training
 import numpy as np
 from stop_words import get_stop_words
 from nltk.stem import WordNetLemmatizer
