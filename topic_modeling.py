@@ -13,7 +13,7 @@ import numpy as np
 food = ['food', 'taste', 'dish', 'savory', 'sweet', 'salty', 'eat', 'flavor', 'tasty', 'yummy']
 service = ['service', 'friendly', 'quick', 'attitude', 'staff', 'efficient', 'slow', 'inefficient']
 ambience = ['clean', 'location', 'space', 'classy', 'room', 'look', 'vibe', 'comfy', 'comfortable', 'homey']
-price = ['price', 'cheap', 'expensive', 'quite', 'inexpensive', 'affordable', 'bill','overpriced', 'reasonable']
+price = ['$', 'price', 'cheap', 'expensive', 'quite', 'inexpensive', 'affordable', 'bill','overpriced', 'reasonable']
 food_vector = np.array(8 * [1] + 20 * [0])
 service_vector = np.array(8 * [0] + 6 * [1] + 14 * [0])
 ambience_vector = np.array(14 * [0] + 6 * [1] + 8 * [0])
@@ -90,9 +90,6 @@ def find_category(sentence):
     ambience_chance = np.inner(ambience_vector, vector)
     price_chance = np.inner(price_vector, vector)
     topic = sorted([(food_chance, 'food'), (service_chance, 'service'), (ambience_chance, 'ambience'), (price_chance, 'price')])
-    if topic[-1][0] > topic[-2][0]:
+    if topic[-1][0] != 0:
         return topic[-1][1]
-    elif topic[-1][0] != 0:
-        return (topic[-1][1], topic[-2][1])
-
 
