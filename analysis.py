@@ -4,7 +4,7 @@ from stop_words import get_stop_words
 from nltk.stem.porter import PorterStemmer
 from gensim import corpora, models
 import gensim
-import crawler
+#import crawler
 import numpy as np
 import nltk_simplify.py
 from nltk.corpus import sentiwordnet as swn
