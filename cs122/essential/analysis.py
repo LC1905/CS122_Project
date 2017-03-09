@@ -92,8 +92,8 @@ def review_analysis(review):
         sentence = [word for word in sentence if not word in en_stop]
         sentence = [wnl.lemmatize(word, 'v') for word in sentence]
         sentence = [wnl.lemmatize(word) for word in sentence]
-        if find_category(sentence_stemmed) != None:
-            category = find_category(sentence_stemmed)
+        if find_category(sentence) != None:
+            category = find_category(sentence)
             for word in sentence:
                 if not word in review_count[category]:
                     review_count[category][word] = 0
