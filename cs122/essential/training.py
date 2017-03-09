@@ -7,9 +7,8 @@ from nltk.stem import WordNetLemmatizer
 def read_training():
     food, service, ambience, price = [], [], [], []
     with open('../essential/training.csv','r') as training:
-        csv_reader = csv.reader(training, skipinitialspace = True)
+        csv_reader = csv.reader(training)
         for row in csv_reader:
-            #print(row)
             food.append(row[0])
             service.append(row[1])
             ambience.append(row[2])
@@ -19,6 +18,7 @@ def read_training():
     ambience = [sentence for sentence in ambience[1:] if sentence != '']
     price = [sentence for sentence in price[1:] if sentence != '']
     return food, service, ambience, price
+    
 
 def raw_dictionary(category):
     dictionary = []
