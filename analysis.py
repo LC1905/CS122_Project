@@ -4,7 +4,6 @@ from stop_words import get_stop_words
 from nltk.stem.porter import PorterStemmer
 from gensim import corpora, models
 import gensim
-#import crawler
 import numpy as np
 import nltk_simplify
 from nltk.corpus import sentiwordnet as swn
@@ -76,7 +75,6 @@ def calc_score(word):
                 neg = corr_synset.neg_score()
                 obj = corr_synset.obj_score()
                 word_to_score = {'pos': pos, 'neg': neg, 'obj': obj}
-
                 return word_to_score
 
 

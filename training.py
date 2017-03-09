@@ -7,10 +7,10 @@ def read_training():
         csv_reader = csv.reader(training, skipinitialspace = True)
         for row in csv_reader:
             print(row)
-            #food.append(row[0])
-            #service.append(row[1])
-            #ambience.append(row[2])
-            #price.append(row[3])
+            food.append(row[0])
+            service.append(row[1])
+            ambience.append(row[2])
+            price.append(row[3])
     food = [sentence.lower() for sentence in food[1:] if sentence != '']
     service = [sentence.lower() for sentence in service[1:] if sentence != '']
     ambience = [sentence.lower() for sentence in ambience[1:] if sentence != '']
