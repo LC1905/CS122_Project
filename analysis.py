@@ -1,13 +1,12 @@
 import nltk
 import bs4
+import gensim
+import numpy as np
 from stop_words import get_stop_words
 from nltk.stem.porter import PorterStemmer
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
 from gensim import corpora, models
-import gensim
-import numpy as np
-import nltk_simplify
 from nltk.corpus import sentiwordnet as swn
 
 food = ['food', 'taste', 'dish', 'savory', 'sweet', 'salty', 'eat', 'flavor']
