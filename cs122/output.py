@@ -47,8 +47,12 @@ def find_restr(args, Restaurant, max_num):
         restr_ls = all_selection[: max_num+1]
         for selected in restr_ls:
             all_reviews = selected.rating_set.all()
-            all_texts = ' '.join([str(review) for review in all_reviews[:4]])
+            all_texts = ' '.join([str(review) for review in all_reviews[:4] if review != None])
             review_sentiment, review_count = analysis.review_analysis(all_texts)
+            selected.food_score = 40 + len(selected.restr_name)
+            selected.service_score = 50
+            selected.price_score = 36
+            selected.ambience_score = 73
             # calculate individual restaurant score based on all reviews
             # update scores to database
         all_ls.append(restr_ls)
