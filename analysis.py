@@ -60,35 +60,22 @@ def find_category(sentence):
 
 
 def calc_score(word):
-    word_to_score = {}
     pos_score = 0
     neg_score = 0
     obj_score = 0
     related = list(swn.senti_synsets(word))
-<<<<<<< HEAD
-    for possible in related:
-        if possible.synset.name().split('.')[0] == word and possible.synset.pos() == pos:
-            corr_synset = possible
-            if corr_synset != None:
-                pos = corr_synset.pos_score()
-                neg = corr_synset.neg_score()
-                obj = corr_synset.obj_score()
-                word_to_score = {'pos': pos, 'neg': neg, 'obj': obj}
-                return word_to_score
-=======
     if related != []:
         for possible in related:
             pos_score += possible.pos_score()
             neg_score += possible.neg_score()
             obj_score += possible.obj_score()
-        word_to_score[word] = {'pos': pos_score/len(related), 'neg': neg_score/len(related), 'obj': obj_score/len(related)}
-    return word_to_score
->>>>>>> d21e6a0b5d5d0823a6f80ea15f667f60f709b971
+        word_to_score = {'pos': pos_score/len(related), 'neg': neg_score/len(related), 'obj': obj_score/len(related)}
+        return word_to_score
 
 
 def review_analysis(review):
-    review_sentiment = {'food': {}, 'service': {}, 'price': {}, 'ambience': {}}
-    review_count = {}
+    review_sentiment = {}
+    review_count = {'food': {}, 'service': {}, 'price': {}, 'ambience':{}}
     en_stop = get_stop_words('en')
     p_stemmer = PorterStemmer()
     sentences = nltk.sent_tokenize(review)
@@ -100,9 +87,10 @@ def review_analysis(review):
         if find_category(sentence_stemmed) != None:
             category = find_category(sentence_stemmed)
             for word in sentence:
-                review_count[word] = review_count.get(word, 0) + 1
-                #word_score = {word: calc_score(word)}          
-                review_sentiment[category][word] = calc_score(word)
+                if not word in review_count[category]:
+                    review_count[category][word] = 0
+                review_count[category][word] += 1       
+                review_sentiment[word] = calc_score(word)
     return review_sentiment, review_count
 
 
