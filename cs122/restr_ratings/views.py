@@ -1,9 +1,12 @@
+import sys
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
 from restr_ratings.models import Restaurant, Rating
 from django import forms
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
-import output
+import django
+
+from essential import output
 
 COLUMN_NAMES = [
         'Name',
@@ -23,11 +26,7 @@ class SearchForm(forms.Form):
         max_length = 100,
         required = True)
     location = forms.CharField(
-<<<<<<< HEAD
-        labels = 'Location',
-=======
         label = 'Location',
->>>>>>> c68e37803f506369053836edc9921cbe1d4595bc
         help_text = 'Specify branch location. (Optional)',
         max_length = 100,
         required = False)
@@ -56,21 +55,17 @@ def get_name(request):
     if request.method == 'POST':
         form = SearchForm(request.POST)
         args = {}
-        restr = form.clean_data['restr']
-        location = forms.clean_data['location']
-        nbh = form.clean_data['nbh']
-        catg = form.clean_data['catg']
-        price = form.clean_data['price']
+        if form.is_valid():
+            restr = form.cleaned_data['restr']
+            location = form.cleaned_data['location']
+            nbh = form.cleaned_data['nbh']
+            catg = form.cleaned_data['catg']
+            price = form.cleaned_data['price']
         args['restr'] = [restr]
         if location:
             args['restr'] = [restr, location]
         ls = sorted([[nbh,'nbh'],[price,'price'],[catg,'category']])
-<<<<<<< HEAD
         args['order'] = [i[1] for i in ls]
-        
-=======
-        args['order'] = [i[1] for i in ls]        
->>>>>>> c68e37803f506369053836edc9921cbe1d4595bc
         all_ls = output.find_restr(args, Restaurant, MAX_NUM)
         for i, restr_ls in enumerate(all_ls):
             fig = output.plot_scatter(restr_ls, Restaurant)
@@ -78,10 +73,7 @@ def get_name(request):
             graphic_i = django.http.HttpResponse(content_type ='image/png')
             canvas.print_png(graphic_i)
             context['graphic'+str(i)] = graphic_i
-<<<<<<< HEAD
         context['columns'] = COLUMN_NAMES             
-=======
->>>>>>> c68e37803f506369053836edc9921cbe1d4595bc
         for i, restr_ls in enumerate(all_ls):
             summary = []
             for r in restr_ls:
