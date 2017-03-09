@@ -44,12 +44,15 @@ def find_restr(args, Restaurant, max_num):
             sel2 = Restaurant.objects.filter(restr_cuisine = category_i)
 
         all_selection = selection | sel1 | sel2
-        restr_ls = [i.restr_name for i in all_selection[:max_num + 1]]
-        for selected in all_selection[:max_num + 1]:
-            all_reviews = Rating.objects.filter(restaurant = selected)
+        restr_ls = all_selection[: max_num+1]
+        for selected in restr_ls:
+            all_reviews = selected.rating_set.all()
             all_texts = ' '.join([str(review) for review in all_reviews[:4]])
             review_sentiment, review_count = analysis.review_analysis(all_texts)
-	    print(review_sentiment, review_count)
+            selected.food_score = 40 + len(selected.restr_name)
+            selected.service_score = 50 + len(selected.restr_name)**2
+            selected.price_score = 36
+            selected.ambience_score = 73
             # calculate individual restaurant score based on all reviews
             # update scores to database
         all_ls.append(restr_ls)
@@ -63,10 +66,11 @@ def plot_scatter(restr_ls, Restaurant):
         name_ls.append(restr.restr_name)
         food_score_ls.append(restr.food_score)
         service_score_ls.append(restr.service_score)
+    print(food_score_ls, service_score_ls)
     fig, ax = plt.subplots()
     plt.title('Restaurant Comparison')
     plt.scatter(food_score_ls, service_score_ls)
-    plt.scatter(food_score_ls[0], service_score_ls[0], s=np.pi*6**2, color='red')
+    #plt.scatter(food_score_ls[0], service_score_ls[0], s=np.pi*6**2, color='red')
     ax.set_xlabel('food_score')
     ax.set_ylabel('service_score')
     for i, txt in enumerate(name_ls):
