@@ -1,12 +1,22 @@
 import nltk
 import bs4
+import gensim
+import numpy as np
 from stop_words import get_stop_words
 from nltk.stem.porter import PorterStemmer
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
+<<<<<<< HEAD
+from gensim import corpora, models
+=======
 #from gensim import corpora, models
 #import gensim
 import numpy as np
+<<<<<<< HEAD
+=======
+import nltk_simplify
+>>>>>>> 3db10e5fe8256f3c3d39f0d2bc65fe2788e24ddb
+>>>>>>> 03a774a816b2dd95ec2f36c5c750572ad1ddf52a
 from nltk.corpus import sentiwordnet as swn
 import training
 

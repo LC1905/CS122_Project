@@ -18,7 +18,6 @@
 
         <div class="frame">
             {% if summary != None %}
-            {% for i in number}
             <div class="summary">
                 <table class="restaurants">
                     <tr>
@@ -26,19 +25,15 @@
                         <th>{{ col }}</th>
                         {% endfor %}
                     </tr>
-                    {% for entry in summaryi %}
+                    {% for entry in summary0 %}
                     <tr>
                         {% for col in entry %}
                         <td>{{ col }}</td>
                         {% endfor %}
                     </tr>
                     {% endfor %}
-<!--                     {% for graph in graphici %}
-                    
-                    {% endfor %} -->
                 </table>
             </div>
-            {% endfor %}
             {% endif %}
     </body>
 </html>
