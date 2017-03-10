@@ -17,23 +17,24 @@
         </div>
 
         <div class="frame">
-            {% if summary0 != None %}
-            <div class="summary0">
-                <table class="restaurants">
-                    <tr>
-                        {% for col in columns %}
-                        <th>{{ col }}</th>
-                        {% endfor %}
-                    </tr>
-                    {% for entry in summary0 %}
-                    <tr>
-                        {% for col in entry %}
-                        <td>{{ col }}</td>
-                        {% endfor %}
-                    </tr>
-                    {% endfor %}
-                </table>
-            </div>
+            {% if summaries != None %}
+                {% for entry in summaries %}
+                <div class="summaries">
+                    <table class="restaurant">
+                        <tr>
+                            {% for col in columns %}
+                            <th>{{ col }}</th>
+                            {% endfor %}
+                        </tr>
+                        <tr>
+                            {% for col in entry %}
+                            <td>{{ col }}</td>
+                            {% endfor %}
+                        </tr>
+                    </table>
+                </div>
+                {% endfor %}
             {% endif %}
+        </div>
     </body>
 </html>
