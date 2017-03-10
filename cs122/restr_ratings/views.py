@@ -12,10 +12,11 @@ COLUMN_NAMES = [
         'Name',
         'Neighborhood',
         'Cuisine',
-        'Food Rating',
-        'Ambience Rating',
-        'Service Rating',
-        'Price_rating',
+        'Price',
+        'Food Score',
+        'Ambience Score',
+        'Service Score',
+        'Price Score',
 ]
 
 MAX_NUM = 7
@@ -67,18 +68,19 @@ def get_name(request):
         ls = sorted([[nbh,'nbh'],[price,'price'],[catg,'category']])
         args['order'] = [i[1] for i in ls]
         all_ls = output.find_restr(args, Restaurant, MAX_NUM)
-        for i, restr_ls in enumerate(all_ls):
+        context['graphics'] = []
+        for restr_ls in all_ls:
             fig = output.plot_scatter(restr_ls, Restaurant)
-            canvas = FigureCanvas(fig)
-            #graphic_i = django.http.HttpResponse(content_type ='image/png')
-            #canvas.print_png(graphic_i)
-            #context['graphic'+str(i)] = graphic_i
+            #canvas = FigureCanvas(fig)
+            #graphic = django.http.HttpResponse(content_type ='image/png')
+            #canvas.print_png(graphic)
+            #context['graphics'].append(graphic)
         context['columns'] = COLUMN_NAMES
         context['summaries'] = []
         for restr_ls in all_ls:
             summary = []
             for r in restr_ls:
-                row = [r.restr_name, r.restr_neighborhood, r.restr_cuisine, r.food_score, r.ambience_score, r.service_score, r.price_score]
+                row = [r.restr_name, r.restr_neighborhood, r.restr_cuisine, r.restr_price, r.food_score, r.ambience_score, r.service_score, r.price_score]
                 summary.append(row)
             context['summaries'].append(summary)
         context['table_num'] = len(all_ls)
