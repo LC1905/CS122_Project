@@ -1,4 +1,5 @@
 import analysis
+import training
 
 tests = {"The BEER STEAMED CLAMS was also a perfect marriage of two of my favorite things: beer and mollusks.":"food",
 "Our feast concluded with the WHISKEY CAKE. Absolutely incredible.":"food",
@@ -99,10 +100,14 @@ tests = {"The BEER STEAMED CLAMS was also a perfect marriage of two of my favori
 
 def test_topics():
     i = 1
-    for test in tests:
-        if analysis.find_category(test) == tests[test]:
+    for sentence in tests:
+        test = training.process_sentence(sentence)
+        print(sentence)
+        print('analysis =', analysis.find_category(test), 'correct = ', tests[sentence])
+        if analysis.find_category(test) == tests[sentence]:
             print("This one is: ", True, i)
             i += 1
+        print()
        
 
 

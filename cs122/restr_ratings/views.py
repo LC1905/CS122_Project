@@ -73,13 +73,14 @@ def get_name(request):
             #graphic_i = django.http.HttpResponse(content_type ='image/png')
             #canvas.print_png(graphic_i)
             #context['graphic'+str(i)] = graphic_i
-        context['columns'] = COLUMN_NAMES             
-        for i, restr_ls in enumerate(all_ls):
+        context['columns'] = COLUMN_NAMES
+        context['summaries'] = []
+        for restr_ls in all_ls:
             summary = []
             for r in restr_ls:
                 row = [r.restr_name, r.restr_neighborhood, r.restr_cuisine, r.food_score, r.ambience_score, r.service_score, r.price_score]
                 summary.append(row)
-            context['summary'+str(i)] = summary
+            context['summaries'].append(summary)
         context['table_num'] = len(all_ls)
         context['columns'] = COLUMN_NAMES
     else:

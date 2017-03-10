@@ -1,9 +1,9 @@
 import nltk
 from essential import training
 import numpy as np
-from stop_words import get_stop_words
-from nltk.stem import WordNetLemmatizer
-from nltk.tokenize import word_tokenize
+#from stop_words import get_stop_words
+#from nltk.stem import WordNetLemmatizer
+#from nltk.tokenize import word_tokenize
 from nltk.corpus import sentiwordnet as swn
 
 '''
@@ -25,12 +25,12 @@ price_vector = np.array(300*[0]+100*[1])
 
 
 def find_vector(sentence):
-    wnl = WordNetLemmatizer()
     vector = []
     vocabulary = food + service + ambience + price
-    for word in vocabulary:
+    for i, word in enumerate(vocabulary):
         if word in sentence:
             vector.append(1)
+            #print(word, i)
         else:
             vector.append(0)
     return vector
@@ -44,7 +44,7 @@ def find_category(sentence):
     ambience_chance = np.inner(ambience_vector, vector)
     price_chance = np.inner(price_vector, vector)
     topic = sorted([(food_chance, 'food'), (service_chance, 'service'), (ambience_chance, 'ambience'), (price_chance, 'price')])
-    if topic[-1][0]/length >= 0.01:
+    if topic[-1][0]/length >= 0.005:
         return topic[-1][1]
 
 
@@ -63,17 +63,11 @@ def calc_score(word):
 
 
 def review_analysis(review):
-    wnl = WordNetLemmatizer()
     review_sentiment = {}
     review_count = {'food': {}, 'service': {}, 'price': {}, 'ambience':{}}
-    en_stop = get_stop_words('en')
     sentences = nltk.sent_tokenize(review)
     for sentence in sentences:
-        sentence = nltk.word_tokenize(sentence)
-        sentence = [word.lower() for word in sentence if word.isalpha()]
-        sentence = [word for word in sentence if not word in en_stop]
-        sentence = [wnl.lemmatize(word, 'v') for word in sentence]
-        sentence = [wnl.lemmatize(word) for word in sentence]
+        sentence = training.process_sentence(sentence)
         if find_category(sentence) != None:
             category = find_category(sentence)
             for word in sentence:
