@@ -68,24 +68,24 @@ def get_name(request):
         ls = sorted([[nbh,'nbh'],[price,'price'],[catg,'category']])
         args['order'] = [i[1] for i in ls]
         all_ls = output.find_restr(args, Restaurant, MAX_NUM)
-        context['graphics'] = []
-        for restr_ls in all_ls:
-            path_name = output.plot_scatter(restr_ls, Restaurant, str(all_ls.index(restr_ls)))
-            #canvas = FigureCanvas(fig)
-            #graphic = django.http.HttpResponse(content_type ='image/png')
-            #canvas.print_png(graphic)
-            context['graphics'].append(path_name)
         context['columns'] = COLUMN_NAMES
-        context['summaries'] = []             
-        for restr_ls in all_ls:
-            summary = []
-            for r in restr_ls:
-                row = [r.restr_name, r.restr_neighborhood, r.restr_cuisine, r.restr_price, r.food_score, r.ambience_score, r.service_score, r.price_score]
-                summary.append(row)
-            context['summaries'].append(summary)
-        context['table_num'] = len(all_ls)
+        if not all_ls:
+            context['summaries'] = []
+        else:
+            context['graphics'] = []
+            for restr_ls in all_ls:
+                path_name = output.plot_scatter(restr_ls, Restaurant, str(all_ls.index(restr_ls)))
+                context['graphics'].append(path_name)
+            context['summaries'] = []             
+            for restr_ls in all_ls:
+                summary = []
+                for r in restr_ls:
+                    row = [r.restr_name, r.restr_neighborhood, r.restr_cuisine, r.restr_price, r.food_score, r.ambience_score, r.service_score, r.price_score]
+                    summary.append(row)
+                context['summaries'].append(summary)
     else:
         form = SearchForm()
+        context['text'] = 'If the restaurant doesn\'t show up, make sure the spelling is correct or try another one!'
     context['form'] = form
 
     return render(request, 'name.html', context)

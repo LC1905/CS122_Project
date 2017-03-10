@@ -77,6 +77,6 @@ def plot_scatter(restr_ls, Restaurant, filename):
         ax.annotate(txt, (food_score_ls[i], service_score_ls[i]))
     path = '/home/student/CS122_Project/cs122/restr_ratings/static/restr_ratings/plot.png'
     fig.savefig(path)
-    path_short = 'restr_ratings/' + filename + '.png'
+    #path_short = 'restr_ratings/' + filename + '.png'
     plt.close(fig)
-    return path_short
+    return path

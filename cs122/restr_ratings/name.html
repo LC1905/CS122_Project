@@ -34,10 +34,14 @@
                     </tr>
                     {% endfor %}
                 </table>
+                {% load static %}
+                <img src="{% static 'restr_ratings/plot.png' %}" alt="My image"/>
                 {% endfor %}
             </div>
-            {% load static %}
-            <img src="{% static "restr_ratings/plot.png" %}" alt="My image"/>
+            {% else %}
+            <div class="text">
+                <th>{{ text }}</th>
+            </div>
             {% endif %}
         </div>
     </body>
