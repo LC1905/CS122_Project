@@ -1,9 +1,8 @@
 import sys
 import matplotlib.pyplot as plt
 import numpy as np
-from essential import analysis, calculate_score
+import analysis
 
-sys.path.append('../CS122_Project')
 sys.path.append('../CS122_Project/cs122/')
 from restr_ratings.models import Restaurant, Rating
 
@@ -28,12 +27,13 @@ def find_restr(args, Restaurant, max_num):
         price_i = restr_i.restr_price
         category_i = restr_i.restr_cuisine
         selection = Restaurant.objects.filter(restr_neighborhood = nbh_i, restr_price = price_i, 
-                                              restr_cuisine = category_i).exclude(restr_name = name_i)
-        if ('nbh' in order[:2]) and ('price' in order[:2]):
+                                              restr_cuisine = category_i)
+
+        if 'nbh' in order[:2] and 'price' in order[:2]:
             sel1 = Restaurant.objects.filter(restr_neighborhood = nbh_i, restr_price = price_i)
-        elif ('nbh' in order[:2]) and ('category' in order[:2]):
+        elif 'nbh' in order[:2] and 'category' in order[2]:
             sel1 = Restaurant.objects.filter(restr_neighborhood = nbh_i, restr_cuisine = category_i)
-        elif ('price' in order[:2]) and ('category' in order[:2]):
+        elif 'price' in order[:2] and 'category' in order[2]:
             sel1 = Restaurant.objects.filter(restr_price = price_i, restr_cuisine = category_i)
 
         if order[0] == 'nbh':
@@ -44,18 +44,17 @@ def find_restr(args, Restaurant, max_num):
             sel2 = Restaurant.objects.filter(restr_cuisine = category_i)
 
         all_selection = selection | sel1 | sel2
-        restr_ls = list(all_selection[: max_num])
-        restr_ls.insert(0,restr_i)
+        restr_ls = all_selection[: max_num+1]
         for selected in restr_ls:
             all_reviews = selected.rating_set.all()
-            all_texts = ' '.join([str(review) for review in all_reviews[:4]])
-            if all_texts:
-                review_sentiment, review_count = analysis.review_analysis(all_texts)
-            scores = calculate_score.get_score(review_sentiment, review_count)
-            selected.food_score = scores[0]
-            selected.service_score = scores[1]
-            selected.price_score = scores[2]
-            selected.ambience_score = scores[3]
+            all_texts = ' '.join([str(review) for review in all_reviews[:4] if review != None])
+            review_sentiment, review_count = analysis.review_analysis(all_texts)
+            selected.food_score = 40 + len(selected.restr_name)
+            selected.service_score = 50
+            selected.price_score = 36
+            selected.ambience_score = 73
+            # calculate individual restaurant score based on all reviews
+            # update scores to database
         all_ls.append(restr_ls)
     return all_ls
 
@@ -75,6 +74,5 @@ def plot_scatter(restr_ls, Restaurant):
     ax.set_ylabel('service_score')
     for i, txt in enumerate(name_ls):
         ax.annotate(txt, (food_score_ls[i], service_score_ls[i]))
-    fig.savefig('/home/student/CS122_Project/cs122/restr_ratings/static/restr_ratings/plot.png')
-    plt.close(fig)
+    fig.show()
     return fig

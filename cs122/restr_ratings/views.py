@@ -71,32 +71,17 @@ def get_name(request):
         for i, restr_ls in enumerate(all_ls):
             fig = output.plot_scatter(restr_ls, Restaurant)
             canvas = FigureCanvas(fig)
-<<<<<<< HEAD
             graphic_i = django.http.HttpResponse(content_type ='image/png')
-            canvas.print_png(graphic_i)
             context['graphic'].append(graphic_i)
         context['columns'] = COLUMN_NAMES
-        context['summary'] = []             
-        for i, restr_ls in enumerate(all_ls):
-=======
-            #graphic_i = django.http.HttpResponse(content_type ='image/png')
-            #canvas.print_png(graphic_i)
-            #context['graphic'+str(i)] = graphic_i
-        context['columns'] = COLUMN_NAMES
-        context['summaries'] = []
+        context['summaries'] = []             
         for restr_ls in all_ls:
->>>>>>> 0b7169a448b3536a13c7c5bd056a79867f243a11
             summary = []
             for r in restr_ls:
                 row = [r.restr_name, r.restr_neighborhood, r.restr_cuisine, r.restr_price, r.food_score, r.ambience_score, r.service_score, r.price_score]
                 summary.append(row)
-<<<<<<< HEAD
-            context['summary'].append(summary)
-=======
             context['summaries'].append(summary)
->>>>>>> 0b7169a448b3536a13c7c5bd056a79867f243a11
         context['table_num'] = len(all_ls)
-        context['columns'] = COLUMN_NAMES
     else:
         form = SearchForm()
     context['form'] = form

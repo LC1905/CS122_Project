@@ -1,11 +1,5 @@
 import nltk
-<<<<<<< HEAD
-import sys, os
-sys.path.append('/essential')
-import training
-=======
 from essential import training
->>>>>>> 0b7169a448b3536a13c7c5bd056a79867f243a11
 import numpy as np
 #from stop_words import get_stop_words
 #from nltk.stem import WordNetLemmatizer
