@@ -24,7 +24,7 @@ def process_sentence(sentence):
     wnl = WordNetLemmatizer()
     en_stop = get_stop_words('en')
     sentence = nltk.word_tokenize(sentence)
-    sentence = [word.lower() for word in sentence if word.isalpha()]
+    sentence = [word.lower() for word in sentence if word.isalpha() or word == '$']
     sentence = [wnl.lemmatize(word, 'v') for word in sentence if not word in en_stop]
     sentence = [wnl.lemmatize(word) for word in sentence]
     return sentence
@@ -41,7 +41,7 @@ def raw_dictionary(category):
 
 
 
-def overlap(word, food, service, ambience, price, threshold = 100):
+def overlap(word, food, service, ambience, price, threshold = 20):
     food, service, ambience, price = food[:threshold], service[:threshold], ambience[:threshold], price[:threshold]
     if word in food and word in service:
         return True
