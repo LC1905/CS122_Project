@@ -17,23 +17,26 @@
         </div>
 
         <div class="frame">
-            {% if summary0 != None %}
-            <div class="summary0">
-                <table class="restaurants">
+            {% if summaries != None %}
+            <div class="summaries">
+                {% for entry in summaries %}
+                <table class="restaurant">
                     <tr>
                         {% for col in columns %}
                         <th>{{ col }}</th>
                         {% endfor %}
                     </tr>
-                    {% for entry in summary0 %}
+                    {% for data in entry %}
                     <tr>
-                        {% for col in entry %}
+                        {% for col in data %}
                         <td>{{ col }}</td>
                         {% endfor %}
                     </tr>
                     {% endfor %}
                 </table>
+                {% endfor %}
             </div>
             {% endif %}
+        </div>
     </body>
 </html>

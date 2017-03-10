@@ -28,8 +28,7 @@ def find_restr(args, Restaurant, max_num):
         price_i = restr_i.restr_price
         category_i = restr_i.restr_cuisine
         selection = Restaurant.objects.filter(restr_neighborhood = nbh_i, restr_price = price_i, 
-                                              restr_cuisine = category_i)
-
+                                              restr_cuisine = category_i).exclude(restr_name = name_i)
         if ('nbh' in order[:2]) and ('price' in order[:2]):
             sel1 = Restaurant.objects.filter(restr_neighborhood = nbh_i, restr_price = price_i)
         elif ('nbh' in order[:2]) and ('category' in order[:2]):
@@ -45,7 +44,8 @@ def find_restr(args, Restaurant, max_num):
             sel2 = Restaurant.objects.filter(restr_cuisine = category_i)
 
         all_selection = selection | sel1 | sel2
-        restr_ls = all_selection[: max_num+1]
+        restr_ls = list(all_selection[: max_num])
+        restr_ls.insert(0,restr_i)
         for selected in restr_ls:
             all_reviews = selected.rating_set.all()
             all_texts = ' '.join([str(review) for review in all_reviews[:4]])
@@ -70,7 +70,7 @@ def plot_scatter(restr_ls, Restaurant):
     fig, ax = plt.subplots()
     plt.title('Restaurant Comparison')
     plt.scatter(food_score_ls, service_score_ls)
-    #plt.scatter(food_score_ls[0], service_score_ls[0], s=np.pi*6**2, color='red')
+    plt.scatter(food_score_ls[0], service_score_ls[0], s=np.pi*6**2, color='red')
     ax.set_xlabel('food_score')
     ax.set_ylabel('service_score')
     for i, txt in enumerate(name_ls):
