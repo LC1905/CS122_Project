@@ -5,6 +5,7 @@ from stop_words import get_stop_words
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
 from nltk.corpus import sentiwordnet as swn
+
 '''
 food = ['food', 'taste', 'dish', 'savory', 'sweet', 'salty', 'eat', 'flavor']
 service = ['service', 'friendly', 'quick', 'attitude', 'staff', 'efficient']
