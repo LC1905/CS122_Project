@@ -92,10 +92,13 @@ def get_restr(page_url, soup):
             class_="biz-rating biz-rating-large clearfix")[0]
         score_find = rating_find.find_all('div')[0]
         category_find = result.find_all('span', class_ = 'category-str-list')[0]
-        price_find = result.find_all('span', class_ = 'business-attribute price-range')[0]
+        price_find_t = result.find_all('span', class_ = 'business-attribute price-range')
+        if len(price_find_t) != 0:
+            price = price_find_t[0].text
+        else:
+            price = 'None'
         score = score_find.get('title')[:3]
         cuisine = category_find.text.strip('\n').strip(' ').split()[0].strip(",")
-        price = price_find.text
         address_find = result.find_all('div', 
             class_="secondary-attributes")[0]
         if address_find != None:
