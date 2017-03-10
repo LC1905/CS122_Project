@@ -1,4 +1,5 @@
 import analysis
+import training
 
 tests = {"The BEER STEAMED CLAMS was also a perfect marriage of two of my favorite things: beer and mollusks.":"food",
 "Our feast concluded with the WHISKEY CAKE. Absolutely incredible.":"food",
@@ -15,6 +16,25 @@ tests = {"The BEER STEAMED CLAMS was also a perfect marriage of two of my favori
 "We had the matcha cheesecake for dessert and it was definitely interesting.":"food",
 "One word... Savory!":"food",
 "The falafel were super yummy - warm, crispy, and cooked to perfection.":"food",
+"There was literally a mountain of sweet potato on my plate with goat's cheese, spiced roasted chickpeas, sunflower seeds and some arugula.":"food",
+"The combination of flavors was sooooo good.":"food",
+"The avocado toast had an amazing goat cheese on top (which there could have been more of, to be honest) and the sweet potato toast came with a seasoned chickpea topping that added the perfect flavoring to the dish.":"food",
+"Food was outstanding - with the smashed avocado exceeding my expectations.":"food",
+"The fried zucchini and eggplant chips are amazing, the shrimp is amazing, the grilled octopus is AMAZING the lamb chops are amazing and last but not least the LOBSTER PASTA!":"food",
+"the roast chicken was a bit too dry, it paired well with the vinegary cauliflower & broccoli.":"food",
+"Oysters were ok.":"food",
+"The restaurant week menu was pretty extensive with both seafood and meat options":"food",
+"The food was good, but the portions are not necessarily filling depending on what you order.":"food",
+"besides mashed potatoes and bacon everything else was mediocre at best":"food",
+"First time eating steak far far and it was insanely good.":"food",
+"The decor was beautiful,  nice live music being played while you dine.":"ambience",
+"However, when I got closer I noticed it was actually pretty dirty and hadn't been cleaned in a while.":"ambience",
+"The place is packed, and there's about 20 people waiting.":"ambience",
+"Love the gorgeous colors in the design of the space, and - a great playlist":"ambience",
+"This place has gone the extra mile in attention to detail to make you feel comfortable.":"ambience",
+"Light and refreshing environment overflowing with atmosphere.":"ambience",
+"Cute little place.":"ambience",
+"Bright and spacious  with high ceiling.":"ambience",
 "Casual, a great place to bring your date to.":"ambience",
 "Ambiance was quiet and nice for a fast casual place.":"ambience",
 "This is a reliable place and a nice family business.":"ambience",
@@ -28,6 +48,17 @@ tests = {"The BEER STEAMED CLAMS was also a perfect marriage of two of my favori
 "Interior: It is super cramped and small so your going to have to wait but its not too bad":"ambience",
 "The place is small and cozy, has the perfect ambiance of casual yet upscale, and the service is excellent.":"ambience",
 "It was cozy and more intimate, but we could still have fun people watching the after-work patrons at the bar.":"ambience",
+"I think they were going for a trendy look but all the whiteness made it feel a little sterile.":"ambience",
+"It's relatively dark with lit candles everywhere which makes it very romantic, but it was awkwardly very quiet in there as well. ":"ambience",
+"We reserved the more intimate upstairs area for my previous birthday and the setting was so cozy and welcoming, not stodgy or pretentious like some other steakhouses.":"ambience",
+"40 minutes is a loooong time":"service",
+"To say the service sucked would be, unfortunately an understatement.":"service",
+"The manager came by our table and even gave us complimentary plate of desserts!":"service",
+"Service: pretty much on point. Attentive, polite, clean.":"service",
+"Waited over 20 mins to even get the check":"service",
+"quickly spilled olive oil and took my colleague's bread away before she even finished":"service",
+"The bus/boy/man was in such a rush to turnover the table":"service",
+"MIA waiter, never came back to refill our water - not even once":"service",
 "The service was amazing and the staffs are knowledgeable about the dishes.":"service",
 "Staff: Here where my problem was. I feel like I would have given this place a 4 star rating if the waiter wasn't rude.":"service",
 "Very casual place with a friendly hostess greeting you at the door and attentive serving staff.":"service",
@@ -37,9 +68,19 @@ tests = {"The BEER STEAMED CLAMS was also a perfect marriage of two of my favori
 "I was getting a little chilly and they offered to bring me blankets and to see if they can turn up the heater.":"service",
 "They staff was friendly and attentive - our water glasses were always full and we could always find someone when we needed another round of drinks.":"service",
 "No tip accepted at the coat check - all service is included.":"service",
+"Service was killer - founder stopped by to welcome us into the restaurant":"service",
 "Impeccable service as to be expected from the Union Square Hospitality Group.":"service",
 "Our server was cute, fun and high energy; she got really excited about summer when I ordered a Pimms Cup on a cold and rainy January night.":"service",
 "The place was crowded as any other night and we were able to get a table with no reservations in 20 minutes.":"service",
+"Overall the staff was knowledgeable, helpful, and attentive.":"service",
+"The waiters were really nice.":"service",
+"While ordering, they were very friendly!":"service",
+"It's definitely a bit pricier than other poke places I've been to and they serve just as big of a bowl if not more.":"price",
+"I will say that if you come outside of theatre-pricing hours, the food is definitely on the expensive side.":"price",
+"Pricey but amazing food":"price",
+"certainly not cheap":"price",
+"It's worth the 42$ easily":"price",
+"Price point is a little on the high side": "price",
 "The place is worth the $$$$.":"price",
 "Oh, also, the bottled sparkling water is 10 dollars a bottle and they don't keep it at your table.":"price",
 "The pricing is fair for what you're getting and comparable to the area.":"price",
@@ -51,14 +92,22 @@ tests = {"The BEER STEAMED CLAMS was also a perfect marriage of two of my favori
 "Some of the food is pricey (Average NYC prices) but you can get a reasonably priced burger and beer here.":"price",
 "The trio only comes with half rolls for $20 bucks which I didn't think was pricey at all.":"price",
 "Overall, this place had the best lobster roll we've had and I look forward to returning (even though they raised their prices)":"price",
-"Of course, spending $50 just sounds silly.":"price"}
+"Of course, spending $50 just sounds silly.":"price",
+"All very affordable, I think it was like forty something bucks for everything.":"price",
+"Happy hour pitcher of beer $13 woo hoo!!":"price",
+"Moral of the story: I felt robbed walking out from Sons Of Thunder, especially for the price I paid ($23).":"price",
+}
 
 def test_topics():
     i = 1
-    for test in tests:
-        if analysis.find_category(test) == tests[test]:
+    for sentence in tests:
+        test = training.process_sentence(sentence)
+        print(sentence)
+        print('analysis =', analysis.find_category(test), 'correct = ', tests[sentence])
+        if analysis.find_category(test) == tests[sentence]:
             print("This one is: ", True, i)
             i += 1
+        print()
        
 
 
