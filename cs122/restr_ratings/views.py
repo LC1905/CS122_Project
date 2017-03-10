@@ -67,19 +67,21 @@ def get_name(request):
         ls = sorted([[nbh,'nbh'],[price,'price'],[catg,'category']])
         args['order'] = [i[1] for i in ls]
         all_ls = output.find_restr(args, Restaurant, MAX_NUM)
+        context['graphic'] = []
         for i, restr_ls in enumerate(all_ls):
             fig = output.plot_scatter(restr_ls, Restaurant)
             canvas = FigureCanvas(fig)
-            #graphic_i = django.http.HttpResponse(content_type ='image/png')
-            #canvas.print_png(graphic_i)
-            #context['graphic'+str(i)] = graphic_i
-        context['columns'] = COLUMN_NAMES             
+            graphic_i = django.http.HttpResponse(content_type ='image/png')
+            canvas.print_png(graphic_i)
+            context['graphic'].append(graphic_i)
+        context['columns'] = COLUMN_NAMES
+        context['summary'] = []             
         for i, restr_ls in enumerate(all_ls):
             summary = []
             for r in restr_ls:
-                row = [r.restr_name, r.restr_neighborhood, r.restr_cuisine, r.food_score, r.ambience_score, r.service_score, r.price_score]
+                row = [r.restr_name, r.restr_neighborhood, r.restr_cuisine, r.restr_price, r.food_score, r.ambience_score, r.service_score, r.price_score]
                 summary.append(row)
-            context['summary'+str(i)] = summary
+            context['summary'].append(summary)
         context['table_num'] = len(all_ls)
         context['columns'] = COLUMN_NAMES
     else:
