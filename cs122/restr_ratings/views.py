@@ -68,22 +68,13 @@ def get_name(request):
         ls = sorted([[nbh,'nbh'],[price,'price'],[catg,'category']])
         args['order'] = [i[1] for i in ls]
         all_ls = output.find_restr(args, Restaurant, MAX_NUM)
-<<<<<<< HEAD
-        context['graphic'] = []
-        for i, restr_ls in enumerate(all_ls):
-            fig = output.plot_scatter(restr_ls, Restaurant)
-            canvas = FigureCanvas(fig)
-            graphic_i = django.http.HttpResponse(content_type ='image/png')
-            context['graphic'].append(graphic_i)
-=======
         context['graphics'] = []
         for restr_ls in all_ls:
-            fig = output.plot_scatter(restr_ls, Restaurant)
+            path_name = output.plot_scatter(restr_ls, Restaurant, str(all_ls.index(restr_ls)))
             #canvas = FigureCanvas(fig)
             #graphic = django.http.HttpResponse(content_type ='image/png')
             #canvas.print_png(graphic)
-            #context['graphics'].append(graphic)
->>>>>>> 82ebd7a2d142bc23abae518952072153008cc9ec
+            context['graphics'].append(path_name)
         context['columns'] = COLUMN_NAMES
         context['summaries'] = []             
         for restr_ls in all_ls:

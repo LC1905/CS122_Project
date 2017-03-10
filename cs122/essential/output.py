@@ -59,7 +59,7 @@ def find_restr(args, Restaurant, max_num):
         all_ls.append(restr_ls)
     return all_ls
 
-def plot_scatter(restr_ls, Restaurant):
+def plot_scatter(restr_ls, Restaurant, filename):
     name_ls = []
     food_score_ls = []
     service_score_ls = []
@@ -75,6 +75,8 @@ def plot_scatter(restr_ls, Restaurant):
     ax.set_ylabel('service_score')
     for i, txt in enumerate(name_ls):
         ax.annotate(txt, (food_score_ls[i], service_score_ls[i]))
-    fig.savefig('/home/student/CS122_Project/cs122/restr_ratings/static/restr_ratings/plot.png')
+    path = '/home/student/CS122_Project/cs122/restr_ratings/static/restr_ratings/plot.png'
+    fig.savefig(path)
+    path_short = 'restr_ratings/' + filename + '.png'
     plt.close(fig)
-    return fig
+    return path_short

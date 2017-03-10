@@ -23,5 +23,6 @@ import restr_ratings
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^restr_ratings/', include('restr_ratings.urls'))]
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 
