@@ -18,22 +18,24 @@
 
         <div class="frame">
             {% if summaries != None %}
+            <div class="summaries">
                 {% for entry in summaries %}
-                <div class="summaries">
-                    <table class="restaurant">
-                        <tr>
-                            {% for col in columns %}
-                            <th>{{ col }}</th>
-                            {% endfor %}
-                        </tr>
-                        <tr>
-                            {% for col in entry %}
-                            <td>{{ col }}</td>
-                            {% endfor %}
-                        </tr>
-                    </table>
-                </div>
+                <table class="restaurant">
+                    <tr>
+                        {% for col in columns %}
+                        <th>{{ col }}</th>
+                        {% endfor %}
+                    </tr>
+                    {% for data in entry %}
+                    <tr>
+                        {% for col in data %}
+                        <td>{{ col }}</td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </table>
                 {% endfor %}
+            </div>
             {% endif %}
         </div>
     </body>
