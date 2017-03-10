@@ -30,18 +30,18 @@ def find_restr(args, Restaurant, max_num):
         selection = Restaurant.objects.filter(restr_neighborhood = nbh_i, restr_price = price_i, 
                                               restr_cuisine = category_i).exclude(restr_name = name_i)
         if ('nbh' in order[:2]) and ('price' in order[:2]):
-            sel1 = Restaurant.objects.filter(restr_neighborhood = nbh_i, restr_price = price_i)
+            sel1 = Restaurant.objects.filter(restr_neighborhood = nbh_i, restr_price = price_i).exclude(restr_name = name_i)
         elif ('nbh' in order[:2]) and ('category' in order[:2]):
-            sel1 = Restaurant.objects.filter(restr_neighborhood = nbh_i, restr_cuisine = category_i)
+            sel1 = Restaurant.objects.filter(restr_neighborhood = nbh_i, restr_cuisine = category_i).exclude(restr_name = name_i)
         elif ('price' in order[:2]) and ('category' in order[:2]):
-            sel1 = Restaurant.objects.filter(restr_price = price_i, restr_cuisine = category_i)
+            sel1 = Restaurant.objects.filter(restr_price = price_i, restr_cuisine = category_i).exclude(restr_name = name_i)
 
         if order[0] == 'nbh':
-            sel2 = Restaurant.objects.filter(restr_neighborhood = nbh_i)
+            sel2 = Restaurant.objects.filter(restr_neighborhood = nbh_i).exclude(restr_name = name_i)
         elif order[0] == 'price':
-            sel2 = Restaurant.objects.filter(restr_neighborhood = price_i)
+            sel2 = Restaurant.objects.filter(restr_neighborhood = price_i).exclude(restr_name = name_i)
         elif order[0] == 'category':
-            sel2 = Restaurant.objects.filter(restr_cuisine = category_i)
+            sel2 = Restaurant.objects.filter(restr_cuisine = category_i).exclude(restr_name = name_i)
 
         all_selection = selection | sel1 | sel2
         restr_ls = list(all_selection[: max_num])
@@ -77,6 +77,6 @@ def plot_scatter(restr_ls, Restaurant, filename):
         ax.annotate(txt, (food_score_ls[i], service_score_ls[i]))
     path = '/home/student/CS122_Project/cs122/restr_ratings/static/restr_ratings/plot.png'
     fig.savefig(path)
-    path_short = 'restr_ratings/' + filename + '.png'
+    #path_short = 'restr_ratings/' + filename + '.png'
     plt.close(fig)
-    return path_short
+    return path
