@@ -27,8 +27,8 @@ def get_score(dic1, dic2):
         if pos_score + neg_score != 0:
             neg_perct = neg_score/ total_score
             pos_perct = pos_score/ total_score
-            final_score = pos_perct/(pos_perct + neg_perct) * 100
+            final_score = round(pos_perct/(pos_perct + neg_perct) * 100, 2)
         else:
-            final_score = 50
+            final_score = 50.00
         scores.append(final_score)
     return scores

@@ -4,7 +4,7 @@
     </head>
     <body>
         <div id="header">
-            <h1>Compare the Restaurants</h1>
+            <h1>MyRestaurant Finder</h1>
         </div>
         <div class="frame">
             <form action="/restr_ratings/restaurant/" method="post">
@@ -35,6 +35,12 @@
                     {% endfor %}
                 </table>
                 {% endfor %}
+                {% load static %}
+                <img src="{% static 'restr_ratings/plot.png' %}" alt="My image"/>
+            </div>
+            {% else %}
+            <div class="text">
+                <th>{{ text }}</th>
             </div>
             {% endif %}
         </div>

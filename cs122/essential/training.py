@@ -3,6 +3,8 @@ import nltk
 from stop_words import get_stop_words
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
+import sys, os
+
 
 def read_training():
     '''
