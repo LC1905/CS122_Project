@@ -5,6 +5,10 @@ from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
 
 def read_training():
+    '''
+    This functions read training data and groups it into lists of sentences describing
+    food, service, ambience, price, respectively.
+    '''
     food, service, ambience, price = [], [], [], []
     with open('/home/student/CS122_Project/cs122/essential/training.csv','r') as training:
         csv_reader = csv.reader(training)
@@ -21,6 +25,9 @@ def read_training():
 
 
 def process_sentence(sentence):
+    '''
+    This function processing a given sentence by tokenizing and stemming it.
+    '''
     wnl = WordNetLemmatizer()
     en_stop = get_stop_words('en')
     sentence = nltk.word_tokenize(sentence)
@@ -31,9 +38,11 @@ def process_sentence(sentence):
     
 
 def raw_dictionary(category):
+    '''
+    This function generates the raw dictionary for the given category, returning the
+    vocabularies in the order of their frequencies.
+    '''
     dictionary = []
-    wnl = WordNetLemmatizer()
-    en_stop = get_stop_words('en')
     for sentence in category:
         dictionary += process_sentence(sentence)
     fdist = nltk.FreqDist(dictionary)
@@ -41,7 +50,12 @@ def raw_dictionary(category):
 
 
 
-def overlap(word, food, service, ambience, price, threshold = 20):
+def overlap(word, food, service, ambience, price, threshold = 1):
+    '''
+    This function checks if a word overlaps (using the given threshold)
+    Currently we set threshold to 1 because our training model is relatively small
+    and it works better if we include those overlapping words
+    '''
     food, service, ambience, price = food[:threshold], service[:threshold], ambience[:threshold], price[:threshold]
     if word in food and word in service:
         return True
@@ -60,14 +74,28 @@ def overlap(word, food, service, ambience, price, threshold = 20):
 
 
 def process_dictionary():
+    '''
+    This function processes the raw dictionary and return the first 100 vocabularies in each topic.
+    '''
     food, service, ambience, price = read_training()
-    food_voc = [word[0] for word in raw_dictionary(food)]
-    service_voc = [word[0] for word in raw_dictionary(service)]
-    ambience_voc = [word[0] for word in raw_dictionary(ambience)]
-    price_voc = [word[0] for word in raw_dictionary(price)]
+    food_voc = [word[0] for word in raw_dictionary(food) if len(word[0]) >= 3]
+    service_voc = [word[0] for word in raw_dictionary(service) if len(word[0]) >= 3]
+    ambience_voc = [word[0] for word in raw_dictionary(ambience) if len(word[0]) >= 3]
+    price_voc = [word[0] for word in raw_dictionary(price) if len(word[0]) >= 3]
     food_voc = [word for word in food_voc if not overlap(word, food_voc, service_voc, ambience_voc, price_voc)]
     service_voc = [word for word in service_voc if not overlap(word, food_voc, service_voc, ambience_voc, price_voc)]
     ambience_voc = [word for word in ambience_voc if not overlap(word, food_voc, service_voc, ambience_voc, price_voc)]
     price_voc = [word for word in price_voc if not overlap(word, food_voc, service_voc, ambience_voc, price_voc)]
     return food_voc[:100], service_voc[:100], ambience_voc[:100], price_voc[:100]
 
+
+def export_model():
+    '''
+    This function exports the model to csv
+    '''
+    food, service, ambience, price = process_dictionary()
+    price[99] = '$'
+    with open('model.csv', 'w') as model:
+        writer = csv.writer(model)
+        for i in range(100):
+            writer.writerow([food[i], service[i], ambience[i], price[i]])

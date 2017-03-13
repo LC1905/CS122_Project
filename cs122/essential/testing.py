@@ -99,6 +99,9 @@ tests = {"The BEER STEAMED CLAMS was also a perfect marriage of two of my favori
 }
 
 def test_topics():
+    '''
+    This is the test for topic modeling.
+    '''
     i = 1
     for sentence in tests:
         test = training.process_sentence(sentence)
