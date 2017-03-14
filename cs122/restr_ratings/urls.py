@@ -20,5 +20,5 @@ from django.contrib import admin
 from restr_ratings import views
 urlpatterns = [
     url(r'^$', views.get_name, name = 'name'),
-    url(r'restaurant/', views.get_name)
+    url(r'restaurant/', views.get_name),
 ]

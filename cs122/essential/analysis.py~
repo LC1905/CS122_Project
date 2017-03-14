@@ -5,6 +5,11 @@ from stop_words import get_stop_words
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
 from nltk.corpus import sentiwordnet as swn
+<<<<<<< HEAD
+import sys, os
+sys.path.append('/essential')
+=======
+>>>>>>> 0b7169a448b3536a13c7c5bd056a79867f243a11
 '''
 food = ['food', 'taste', 'dish', 'savory', 'sweet', 'salty', 'eat', 'flavor']
 service = ['service', 'friendly', 'quick', 'attitude', 'staff', 'efficient']
@@ -36,7 +41,11 @@ def find_vector(sentence):
 
 
 def find_category(sentence):
+<<<<<<< HEAD
+    length = len(sentence.split())
+=======
     length = len(sentence)
+>>>>>>> 0b7169a448b3536a13c7c5bd056a79867f243a11
     vector = np.array(find_vector(sentence))
     food_chance = np.inner(food_vector, vector)
     service_chance = np.inner(service_vector, vector)

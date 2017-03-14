@@ -1,5 +1,5 @@
-import analysis
-import training
+from essential import analysis
+from essential import training
 
 tests = {"The BEER STEAMED CLAMS was also a perfect marriage of two of my favorite things: beer and mollusks.":"food",
 "Our feast concluded with the WHISKEY CAKE. Absolutely incredible.":"food",
@@ -99,6 +99,9 @@ tests = {"The BEER STEAMED CLAMS was also a perfect marriage of two of my favori
 }
 
 def test_topics():
+    '''
+    This is the test for topic modeling.
+    '''
     i = 1
     for sentence in tests:
         test = training.process_sentence(sentence)
