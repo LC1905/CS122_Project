@@ -15,4 +15,4 @@ training.csv: training data for topic modeling
 model.csv: topic models
 
 *** IMPORTANT ***
-When testing our project, please run "python3 manage.py runserver" in the cs122 directory. Once the link appears, right click to open the link, and add "restr_ratings" to the end, OR ELSE IT WILL NOT WORK. When testing on a second restaurant, delete the "/restaurant" tab at the end to retry.
+When testing our project, please run "python3 manage.py runserver" in the "CS122_Project/cs122" directory. Once the link appears, right click to open the link, and add "restr_ratings" to the end, OR ELSE IT WILL NOT WORK.
