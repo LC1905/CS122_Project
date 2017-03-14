@@ -2,7 +2,7 @@ import nltk
 import random
 from nltk.corpus import gutenberg
 from nltk.corpus import sentiwordnet as swn
-import nltk_simplify
+#import nltk_simplify
 
 category = {'JJ': 'a', 'JJR': 'a', 'JJS': 'a', 'PRP': 'n', 'NN': 'n', 'NNS': 'n', 'NNP': 'n',
 'NNPS': 'n', 'RB': 'r', 'RBR': 'r', 'RBS': 'r', 'VBD': 'v', 'VBG': 'v', 'VBN': 'v', 'VBP': 'v', 'VBZ': 'v'}
