@@ -86,6 +86,7 @@ def get_name(request):
     else:
         form = SearchForm()
         context['text'] = 'If the restaurant doesn\'t show up, make sure the spelling is correct or try another one!'
+        context['suggest'] = 'Suggested Searches: The Purple Pig, Oriole, MingHin Cuisine (Location: The Loop)'
     context['form'] = form
 
     return render(request, 'name.html', context)
