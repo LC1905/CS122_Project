@@ -1,12 +1,17 @@
-'''
-dictionary1:
-    key: words
-    value: {'neg': 0, 'obj': 0, 'pos': 0}
-dictionary2:
-    key: food, price, service, ambience
-    value: {'word', 0}
-'''
+
 def get_score(dic1, dic2):
+    '''
+    Calculate the food, service, price, ambience score from sentiment 
+    and word count dictionaries.
+    Input:
+	dictionary1:
+	    key: words
+	    value: {'neg': 0, 'obj': 0, 'pos': 0}
+	dictionary2:
+	    key: food, price, service, ambience
+	    value: {'word', 0}
+    Return: list of scores
+    '''
     food = dic2['food']
     service = dic2['service']
     price = dic2['price']

@@ -1,6 +1,4 @@
 # CS122 Project: Yelp Crawler
-# Mar 8 8:06pm
-
 
 import re
 import bs4
@@ -20,19 +18,6 @@ from restr_ratings.models import Restaurant, Rating
 initial_url = 'https://www.yelp.com/search?cflt=restaurants&find_loc=Chicago%2C+IL'
 limiting_domain = 'www.yelp.com'
 
-'''
-def create_url(name, city, state):
-    name_words = name.split()
-    name_new = "+".join(name_words)
-    city_words = city.split()
-    city_new = "+".join(city_words)
-    if name == "null":
-        url = initial_url
-    else:
-        url = ("https://www.yelp.com/search?find_desc=" + name_new + 
-            "&find_loc=" + city_new + "%2C+" + state)
-    return url
-'''
 
 def get_soup(url):
     '''
@@ -52,7 +37,7 @@ def next_page(url, page_num):
     Find the url of next page of search results
 
     Input: the initial url, initial page number
-    Output: the url of next page of results
+    Output: url of the next page, next page number
     '''
     soup = get_soup(url)
     pages = soup.find_all('a', 
@@ -70,15 +55,12 @@ def next_page(url, page_num):
 
 def get_restr(page_url, soup):
     '''
-    Given the url of the first page of search results of a restaurant, return the information
-    of all the restaurants in the search results which have the same name of 
-    the restaurant we search for 
+    Given the url of the first page of search results of a restaurant, 
+    return all relevant information of that restaurant.
 
     Input: the url of the first page of search result on Yelp, the soup object
-            of this url, the number of restaurants already crawled, and 
-            the restaurant name we are interested in
-    Output: dictionaries that contain restaurant profiles, and ratings of each
-            restaurant
+            of this url
+    Return: Restaurant model containing relevant information
     '''
     regular_results = soup.find_all('li', class_="regular-search-result")
     for result in regular_results:
@@ -129,7 +111,6 @@ def rating_database(url, restr):
     Construct a database of ratings using the url that contains the ratings
 
     Input: the url that contains all the ratings
-    Output: a dictionary that contains all the information about each rating
     '''
     soup = get_soup(url)
     reviews = soup.find_all('div', itemprop = "review")
@@ -147,14 +128,14 @@ def rating_database(url, restr):
 
 def crawler(starting_url, max_num, page_num):
     '''
-    Start from the url that contains the first page of search results, 
-    crawl all the pages of restaurants, return two nested dictionary, one contains 
-    all the information about the restaurants with the given name, and another contains all the ratings
-
-    Input: the name, city, and state of the restaurant
-            and the maximum number of pages to crawl
-    Output: one dictionary that contains information about restaurants, 
-            and one dictionary that contains all the ratings
+    Crawl for restaurant information
+    Input: 
+        starting_url: url of the initial page
+        max_num: max number of page crawled
+        page_num: current page number
+    Return:
+        next_url: url of the next page
+        next_page_num: next page number
     '''
     starting_soup = get_soup(starting_url)
     get_restr(starting_url, starting_soup)
