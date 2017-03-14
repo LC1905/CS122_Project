@@ -12,7 +12,7 @@ MAX_NUM = 7
 def find_restr(args, Restaurant, max_num):
     '''
     E.g. args = {'restr': ['Eden'], 'order': ['nbh','price','category']}
-    Output: list of restaurant names
+    Output: list of restaurant objects
     '''
     restr = args['restr']
     order = args['order']
@@ -60,6 +60,14 @@ def find_restr(args, Restaurant, max_num):
     return all_ls
 
 def plot_scatter(restr_ls, Restaurant, filename):
+    '''
+    Create scatter plot to compare restaruants.
+    Input: 
+        restr_ls: list of restaurant objects
+        Restaurant: model
+        filename: output filename
+    Return: path of the file plotted
+    '''
     name_ls = []
     food_score_ls = []
     service_score_ls = []
