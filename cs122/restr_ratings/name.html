@@ -2,6 +2,8 @@
     <head>
         <title>Restaurants</title>
     </head>
+    {% load static %}
+    <body id="bg" style="background-image: url('{% static 'restr_ratings/background.jpg'%}')";>
     <body>
         <div id="header">
             <h1>MyRestaurant Finder</h1>
@@ -34,7 +36,6 @@
                     </tr>
                     {% endfor %}
                 </table>
-                {% load static %}
                 <img src="{% static 'restr_ratings/plot.png' %}" alt="My image"/>
                 {% endfor %}
             </div>
