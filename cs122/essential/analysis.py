@@ -19,7 +19,7 @@ def import_model():
     This function imports the trained topic model
     '''
     food, service, ambience, price = [], [], [], []
-    with open('model.csv', 'r') as model:
+    with open('/home/student/CS122_Project/cs122/essential/model.csv', 'r') as model:
         reader = csv.reader(model)
         for row in reader:
             food.append(row[0])
