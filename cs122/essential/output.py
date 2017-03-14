@@ -1,4 +1,6 @@
 import sys
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import numpy as np
 from essential import analysis, calculate_score
@@ -17,9 +19,9 @@ def find_restr(args, Restaurant, max_num):
     restr = args['restr']
     order = args['order']
     if len(restr) == 2:
-        my_restr = Restaurant.objects.filter(restr_name = restr[0], restr_neighborhood = restr[1])
+        my_restr = Restaurant.objects.filter(restr_name__iexact = restr[0], restr_neighborhood__iexact = restr[1])
     else:
-        my_restr = Restaurant.objects.filter(restr_name = restr[0])
+        my_restr = Restaurant.objects.filter(restr_name__iexact = restr[0])
     
     all_ls = []
     for restr_i in my_restr:
